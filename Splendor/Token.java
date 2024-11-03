@@ -1,3 +1,5 @@
+package Splendor;
+
 import java.awt.image.BufferedImage;
 
 public class Token extends Piece {

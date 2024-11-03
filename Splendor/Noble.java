@@ -1,3 +1,4 @@
+package Splendor;
 import java.awt.image.BufferedImage;
 
 public class Noble extends Piece {
