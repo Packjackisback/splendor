@@ -13,8 +13,8 @@ public class Card extends Piece implements Drawable{
 	private int backLevel;
 	private boolean isOnBack;
 
-	public Card(String type, BufferedImage img, Gem typeGem, int worth, HashMap<Gem, Integer> cost, int backLevel) {
-		super(type, img);
+	public Card(BufferedImage img, Gem typeGem, int worth, HashMap<Gem, Integer> cost, int backLevel) {
+		super("Card", img);
 		this.typeGem = typeGem;
 		this.worth =worth;
 		this.cost = cost;
@@ -28,13 +28,13 @@ public class Card extends Piece implements Drawable{
 	public static BufferedImage getBack(int backLevel) {
 		switch(backLevel) {
 			case 1:
-				BufferedImage green = ImageLoader.loadImage("assets/GreenCard");
+				BufferedImage green = ImageLoader.loadImage("Splendor/assets/GreenCard.jpg");
 				return green;
 			case 2: 
-				BufferedImage yellow = ImageLoader.loadImage("assets/YellowCard");
+				BufferedImage yellow = ImageLoader.loadImage("Splendor/assets/YellowCard.jpg");
 				return yellow;
 			case 3:
-				BufferedImage blue = ImageLoader.loadImage("assets/BlueCard");
+				BufferedImage blue = ImageLoader.loadImage("Splendorassets/BlueCard.jpg");
 				return blue;
 			default:
 				throw new RuntimeException("BackLevel not found\nBackLevel: " + backLevel);
