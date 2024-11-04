@@ -1,9 +1,6 @@
 package Splendor;
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 public class Card extends Piece implements Drawable{
@@ -28,13 +25,13 @@ public class Card extends Piece implements Drawable{
 	public static BufferedImage getBack(int backLevel) {
 		switch(backLevel) {
 			case 1:
-				BufferedImage green = ImageLoader.loadImage("Splendor/assets/GreenCard.jpg");
+				BufferedImage green = Generator.loadImage("Splendor/assets/GreenCard.jpg");
 				return green;
 			case 2: 
-				BufferedImage yellow = ImageLoader.loadImage("Splendor/assets/YellowCard.jpg");
+				BufferedImage yellow = Generator.loadImage("Splendor/assets/YellowCard.jpg");
 				return yellow;
 			case 3:
-				BufferedImage blue = ImageLoader.loadImage("Splendorassets/BlueCard.jpg");
+				BufferedImage blue = Generator.loadImage("Splendorassets/BlueCard.jpg");
 				return blue;
 			default:
 				throw new RuntimeException("BackLevel not found\nBackLevel: " + backLevel);

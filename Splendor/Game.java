@@ -19,8 +19,12 @@ public class Game {
 
     public Game() {
 //TODO implement reading from csv file
-        //Stack[
-        testingCard = new Card(ImageLoader.loadImage("Splendor/assets/BlueCard.jpg"), new Gem("Blue"), 1, new HashMap(), 1);
+        Stack[] cards = Generator.getCards();
+        this.greenCards = cards[0];
+        this.yellowCards = cards[1];
+        this.blueCards = cards[2];
+
+        testingCard = new Card(Generator.loadImage("Splendor/assets/BlueCard.jpg"), new Gem("Blue"), 1, new HashMap(), 1);
     }
 
     //Getters
