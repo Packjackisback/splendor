@@ -57,7 +57,7 @@ public class Game {
         return out;
     }
 
-    public void dealCards() {
+    public void dealCards() { //Puts cards into the board from the stacks, should be called whenever a change to the board is made
         while(greenBoard.size()<4) {
             greenCards.peek().flip();
             greenBoard.add(0, greenCards.pop());

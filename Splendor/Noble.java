@@ -1,14 +1,17 @@
 package Splendor;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 public class Noble extends Piece implements Drawable{
 	private int worth;
+	private HashMap<Gem, Integer> cost;
 
 	
-	public Noble(BufferedImage img) {
+	public Noble(BufferedImage img, HashMap<Gem, Integer> cost) {
 		super("Noble", img);
-		worth = 3;
+		this.cost = cost;
+		this.worth = 3;
 	}
 	
 	public int getWorth() { return worth; }
