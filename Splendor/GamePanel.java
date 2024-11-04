@@ -15,6 +15,6 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Call the drawCards method of the Game instance to draw the cards
-        game.drawCards(g, 50, 50, 80, 120, 10); // Starting x, y, card width, card height, padding
+        game.drawCards(g, 50, 50, 80, 120); // Starting x, y, card width, card height, padding
     }
 }
