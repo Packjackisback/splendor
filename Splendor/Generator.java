@@ -21,9 +21,7 @@ public class Generator {
     }
     public static ArrayList<Noble> getNobles() {
         ArrayList<Noble> nobles = new ArrayList<Noble>();
-        for(int i = 1; i<10; i++)
-            nobles.add(new Noble(Generator.loadImage("Splendor/assets/nobles/2000" + i + ".jpg")));
-            nobles.add(new Noble(Generator.loadImage("Splendor/assets/nobles/20010.jpg")));
+
         return nobles;
     }
     public static Stack[] getCards() {
