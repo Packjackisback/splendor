@@ -1,3 +1,5 @@
+package Splendor;
+
 public class Gem {
     private String gemType;
     public Gem(String gemType) {
