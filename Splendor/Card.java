@@ -10,8 +10,8 @@ public class Card extends Piece implements Drawable{
 	private int backLevel;
 	private boolean isOnBack;
 
-	public Card(BufferedImage img, Gem typeGem, int worth, HashMap<Gem, Integer> cost, int backLevel) {
-		super("Card", img);
+	public Card(String filename, Gem typeGem, int worth, HashMap<Gem, Integer> cost, int backLevel) {
+		super("Card", Generator.loadImage(filename));
 		this.typeGem = typeGem;
 		this.worth =worth;
 		this.cost = cost;

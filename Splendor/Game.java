@@ -1,6 +1,8 @@
 package Splendor;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -17,14 +19,14 @@ public class Game {
     Card testingCard;
 
 
-    public Game() {
+    public Game() throws IOException {
 //TODO implement reading from csv file
         Stack[] cards = Generator.getCards();
         this.greenCards = cards[0];
         this.yellowCards = cards[1];
         this.blueCards = cards[2];
 
-        testingCard = new Card(Generator.loadImage("Splendor/assets/BlueCard.jpg"), new Gem("Blue"), 1, new HashMap(), 1);
+        testingCard = new Card("Splendor/assets/BlueCard.jpg", new Gem("Blue"), 1, new HashMap(), 1);
     }
 
     //Getters
