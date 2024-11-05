@@ -42,11 +42,11 @@ public class Game {
 			for (int j = 0; j < count; j++) {
 				switch(i) {
 					case 0: tokens.add(new Token(null, new Gem("Wild"), false)); break;
-					case 1: tokens.add(new Token(null, new Gem("Ruby"), false)); break;
-					case 2: tokens.add(new Token(null, new Gem("Sapphire"), false)); break;
-					case 3: tokens.add(new Token(null, new Gem("Onyx"), false)); break;
-					case 4: tokens.add(new Token(null, new Gem("Diamond"), false)); break;
-					case 5: tokens.add(new Token(null, new Gem("Emerald"), false)); break;
+					case 1: tokens.add(new Token(null, new Gem("Red"), false)); break;
+					case 2: tokens.add(new Token(null, new Gem("Blue"), false)); break;
+					case 3: tokens.add(new Token(null, new Gem("Black"), false)); break;
+					case 4: tokens.add(new Token(null, new Gem("White"), false)); break;
+					case 5: tokens.add(new Token(null, new Gem("Green"), false)); break;
 					default: break;
 				}
 			}
