@@ -19,6 +19,11 @@ public class Card extends Piece implements Drawable{
 		this.isOnBack = true;
 	}
 
+	public Card() { // ONLY FOR TESTING, REMOVE WHEN DONE
+		super("Card", null);
+		return;
+	}
+
 	public void flip() {
 		isOnBack = !isOnBack;
 	}
