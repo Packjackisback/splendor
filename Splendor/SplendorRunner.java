@@ -10,7 +10,7 @@ public class SplendorRunner {
         Game game = new Game();
         GamePanel testing = new GamePanel(game);
         gameFrame.setPanel(testing);
-       
+
     }
     public static void setUpGame() {
 

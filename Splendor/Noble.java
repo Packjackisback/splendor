@@ -8,8 +8,8 @@ public class Noble extends Piece implements Drawable{
 	private HashMap<Gem, Integer> cost;
 
 	
-	public Noble(BufferedImage img, HashMap<Gem, Integer> cost) {
-		super("Noble", img);
+	public Noble(String img, HashMap<Gem, Integer> cost) {
+		super("Noble", Generator.loadImage(img));
 		this.cost = cost;
 		this.worth = 3;
 	}

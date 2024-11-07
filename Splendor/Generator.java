@@ -21,7 +21,61 @@ public class Generator {
     }
     public static ArrayList<Noble> getNobles() {
         ArrayList<Noble> nobles = new ArrayList<Noble>();
-
+        nobles.add(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Blue"),4);
+            put(new Gem("White"),4);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20002.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Blue"),4);
+            put(new Gem("Green"),4);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20003.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Red"),4);
+            put(new Gem("Green"),4);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20004.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Red"),4);
+            put(new Gem("Black"),4);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20005.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Black"),4);
+            put(new Gem("White"),4);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20006.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Black"),3);
+            put(new Gem("Blue"),3);
+            put(new Gem("White"),3);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20007.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Green"),3);
+            put(new Gem("Blue"),3);
+            put(new Gem("White"),3);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20008.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Green"),3);
+            put(new Gem("Blue"),3);
+            put(new Gem("Red"),3);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20009.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("Green"),3);
+            put(new Gem("Black"),3);
+            put(new Gem("Red"),3);
+        }}
+        ));
+        nobles.add(new Noble("Splendor/assets/nobles/20010.jpg", new HashMap<Gem, Integer>() {{
+            put(new Gem("White"),3);
+            put(new Gem("Black"),3);
+            put(new Gem("Red"),3);
+        }}
+        ));
         return nobles;
     }
     public static Stack[] getCards() throws IOException {
@@ -44,7 +98,7 @@ public class Generator {
             if(!tokens[7].equals("")) {cost.put(new Gem("Green"), Integer.parseInt(tokens[7]));}
             if(!tokens[8].equals("")) {cost.put(new Gem("Red"), Integer.parseInt(tokens[8]));}
             if(!tokens[9].equals("")) {cost.put(new Gem("Black"), Integer.parseInt(tokens[9]));}
-            int worth = tokens[2].equals("") ? Integer.parseInt(tokens[2]) : 0; //If the point value is not null, set that to the worth, else set 0
+            int worth = tokens[2].equals("") ? 0 : Integer.parseInt(tokens[2]); //If the point value is not null, set that to the worth, else set 0
             switch(tokens[0]) {
 
                 case "1":
@@ -60,8 +114,6 @@ public class Generator {
                 default:
                     throw(new RuntimeException("Invalid back level:" + tokens[0]));
             }
-        return cards;
-
         }
 
         return cards;

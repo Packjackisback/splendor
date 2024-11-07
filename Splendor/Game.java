@@ -1,4 +1,8 @@
+package Splendor;
+import Splendor.*;
+
 import java.awt.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -19,7 +23,7 @@ public class Game {
 
 	int x, y, width, height;
 	
-	public Game(JPanel panel) {
+	public Game() throws IOException {
 		//TODO implement reading from csv file
 		//Stack[] cards = Generator.getCards();
 		//this.greenCards = cards[0];
@@ -41,30 +45,25 @@ public class Game {
 			ArrayList<Token> tokens = new ArrayList<Token>();
 			for (int j = 0; j < count; j++) {
 				switch(i) {
-					case 0: tokens.add(new Token(null, new Gem("Wild"), false)); break;
-					case 1: tokens.add(new Token(null, new Gem("Red"), false)); break;
-					case 2: tokens.add(new Token(null, new Gem("Blue"), false)); break;
-					case 3: tokens.add(new Token(null, new Gem("Black"), false)); break;
-					case 4: tokens.add(new Token(null, new Gem("White"), false)); break;
-					case 5: tokens.add(new Token(null, new Gem("Green"), false)); break;
+					case 0: tokens.add(new Token(null, new Gem("Wild"))); break;
+					case 1: tokens.add(new Token(null, new Gem("Red"))); break;
+					case 2: tokens.add(new Token(null, new Gem("Blue"))); break;
+					case 3: tokens.add(new Token(null, new Gem("Black"))); break;
+					case 4: tokens.add(new Token(null, new Gem("White"))); break;
+					case 5: tokens.add(new Token(null, new Gem("Green"))); break;
 					default: break;
 				}
 			}
 			tokenBank.add(tokens);
 		}
-		blueCards.add(new Card());
-		yellowCards.add(new Card());
-		greenCards.add(new Card());
+
+		Stack[] cardStacks = Generator.getCards();
+
+		blueCards = cardStacks[0];
+		yellowCards = cardStacks[1];
+		greenCards = cardStacks[2];
 		
-		for (int i = 0; i < 3; i++) {
-			switch(i) {
-			case 0: for (int j = 0; j < 4; j++) { blueBoard.add(new Card()); } break;
-			case 1: for (int j = 0; j < 4; j++) { yellowBoard.add(new Card()); } break;
-			case 2: for (int j = 0; j < 4; j++) { greenBoard.add(new Card()); } break;
-			default: break;
-			}
-		}
-		//testingCard = new Card(Generator.loadImage("Splendor/assets/BlueCard.jpg"), new Gem("Blue"), 1, new HashMap(), 1);
+		
 	}
 
 	// Getters
@@ -188,18 +187,21 @@ public class Game {
 		return out;
 	}
 
-	public void dealCards() {
-		for (int i = 0; i < 4; i++) {
-			Card greenCard = greenCards.pop();
-			Card yellowCard = yellowCards.pop();
-			Card blueCard = blueCards.pop();
-			greenCard.flip(); greenBoard.add(greenCard);
-			yellowCard.flip(); yellowBoard.add(yellowCard);
-			blueCard.flip(); blueBoard.add(blueCard);
-			
-			//greenCard.startAnimation(i, i, i, gamePanel);
+	public void dealCards() { //This doesn't deal 4 at once so it can be called after any card is drawn and not fuck everything up
+		while(greenBoard.size()<4) {
+			greenCards.peek().flip();
+			greenBoard.add(0, greenCards.pop());
+		}
+		while(yellowBoard.size()<4) {
+			yellowCards.peek().flip();
+			yellowBoard.add(0, yellowCards.pop());
+		}
+		while(blueBoard.size()<4) {
+			blueCards.peek().flip();
+			blueBoard.add(0, blueCards.pop());
 		}
 	}
+
 
 	// Draw methods
 	public void drawTokens(Graphics g, int startX, int startY, int tokenBankWidth, int tokenBankHeight) {
@@ -207,10 +209,23 @@ public class Game {
 	}
 
 	public void drawCards(Graphics g, int startX, int startY, int cardWidth, int cardHeight) {
-		// also includes the
-		testingCard.draw(g, startX, startY, cardWidth, cardHeight);
-		// Above is just testing, eventually this will hold the Lists of Cards, and this
-		// will display them
-		// TODO Implement drawing 2d array of cards
+		int padding = 5; //Change to affect padding
+		int currentX = 0, currentY = 0;
+		for(Card c : greenBoard) {
+			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			currentX += cardWidth + padding;
+		}
+		currentY += cardHeight;
+		currentX = startX;
+		for(Card c : yellowBoard) {
+			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			currentX += cardWidth + padding;
+		}
+		currentY += cardHeight;
+		currentX = startX;
+		for(Card c : blueBoard) {
+			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			currentX += cardWidth + padding;
+		}
 	}
 }
