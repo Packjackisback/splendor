@@ -9,12 +9,13 @@ public class GamePanel extends JPanel {
     public GamePanel(Game game) {
         this.game = game;  // Initialize with the Game instance
         setPreferredSize(new Dimension(800, 600)); // Set a preferred size
+        setVisible(true);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Call the drawCards method of the Game instance to draw the cards
-        game.drawCards(g, 50, 50, 80, 120); // Starting x, y, card width, card height, padding
+        game.drawCards(g, 0, 0, 160, 240); // Starting x, y, card width, card height, padding
     }
 }

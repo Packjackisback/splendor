@@ -4,6 +4,7 @@ import Splendor.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -60,10 +61,13 @@ public class Game {
 		Stack[] cardStacks = Generator.getCards();
 
 		blueCards = cardStacks[0];
+		Collections.shuffle(blueCards);
 		yellowCards = cardStacks[1];
+		Collections.shuffle(yellowCards);
 		greenCards = cardStacks[2];
-		
-		
+		Collections.shuffle(greenCards);
+		dealCards();
+
 	}
 
 	// Getters
@@ -210,21 +214,22 @@ public class Game {
 
 	public void drawCards(Graphics g, int startX, int startY, int cardWidth, int cardHeight) {
 		int padding = 5; //Change to affect padding
+		System.out.println("This has been called");
 		int currentX = 0, currentY = 0;
 		for(Card c : greenBoard) {
-			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
 			currentX += cardWidth + padding;
 		}
-		currentY += cardHeight;
+		currentY += cardHeight + padding;
 		currentX = startX;
 		for(Card c : yellowBoard) {
-			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
 			currentX += cardWidth + padding;
 		}
-		currentY += cardHeight;
+		currentY += cardHeight + padding;
 		currentX = startX;
 		for(Card c : blueBoard) {
-			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
 			currentX += cardWidth + padding;
 		}
 	}
