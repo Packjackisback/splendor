@@ -36,7 +36,7 @@ public class Card extends Piece implements Drawable{
 				BufferedImage yellow = Generator.loadImage("Splendor/assets/YellowCard.jpg");
 				return yellow;
 			case 3:
-				BufferedImage blue = Generator.loadImage("Splendorassets/BlueCard.jpg");
+				BufferedImage blue = Generator.loadImage("Splendor/assets/BlueCard.jpg");
 				return blue;
 			default:
 				throw new RuntimeException("BackLevel not found\nBackLevel: " + backLevel);
