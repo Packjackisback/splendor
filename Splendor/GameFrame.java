@@ -10,7 +10,6 @@ public class GameFrame extends JFrame {
         HEIGHT = 1080;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
-        setLocationRelativeTo(null);
         setVisible(true);
     }
     public void setPanel(JPanel panel) {
