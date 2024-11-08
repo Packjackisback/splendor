@@ -4,6 +4,7 @@ import Splendor.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -15,24 +16,17 @@ public class Game {
 	Stack<Card> greenCards;
 	Stack<Card> yellowCards;
 	Stack<Card> blueCards;
-	ArrayList<Noble> nobleBank;
+	ArrayList<Noble> nobleBank = new ArrayList<Noble>();
 	ArrayList<Card> greenBoard;
 	ArrayList<Card> yellowBoard;
 	ArrayList<Card> blueBoard;
 	Card testingCard;
-
 	int x, y, width, height;
 	
 	public Game() throws IOException {
-		//TODO implement reading from csv file
-		//Stack[] cards = Generator.getCards();
-		//this.greenCards = cards[0];
-		//this.yellowCards = cards[1];
-		//this.blueCards = cards[2];
-		blueCards = new Stack<Card>();
-		yellowCards = new Stack<Card>();
-		greenCards = new Stack<Card>();
-		
+		ArrayList<Noble> nobles = Generator.getNobles();
+		Collections.shuffle(nobles);
+		for(int i = 0; i<5; i++) this.nobleBank.add(nobles.get(i));
 		greenBoard = new ArrayList<Card>();
 		blueBoard = new ArrayList<Card>();
 		yellowBoard = new ArrayList<Card>();
@@ -57,13 +51,16 @@ public class Game {
 			tokenBank.add(tokens);
 		}
 
-		Stack[] cardStacks = Generator.getCards();
+		Stack[] cardStacks = Generator.getCards(); //Generate cards and shuffle
 
 		blueCards = cardStacks[0];
+		Collections.shuffle(blueCards);
 		yellowCards = cardStacks[1];
+		Collections.shuffle(yellowCards);
 		greenCards = cardStacks[2];
-		
-		
+		Collections.shuffle(greenCards);
+		dealCards();
+
 	}
 
 	// Getters
@@ -204,27 +201,34 @@ public class Game {
 
 
 	// Draw methods
-	public void drawTokens(Graphics g, int startX, int startY, int tokenBankWidth, int tokenBankHeight) {
+	public void drawNobles(Graphics g, int startX, int startY, int tokenBankWidth, int tokenBankHeight) {
+		int availableSpaceY = tokenBankHeight/6 - 30; //Available space for each token minus total padding (5*6)
+		int currentY = startY;
 
+		for(Noble n : nobleBank) {
+			n.draw(g, startX, currentY, tokenBankWidth, availableSpaceY);
+			currentY += availableSpaceY + 5;
+		}
 	}
 
 	public void drawCards(Graphics g, int startX, int startY, int cardWidth, int cardHeight) {
 		int padding = 5; //Change to affect padding
+		System.out.println("This has been called");
 		int currentX = 0, currentY = 0;
 		for(Card c : greenBoard) {
-			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
 			currentX += cardWidth + padding;
 		}
-		currentY += cardHeight;
+		currentY += cardHeight + padding;
 		currentX = startX;
 		for(Card c : yellowBoard) {
-			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
 			currentX += cardWidth + padding;
 		}
-		currentY += cardHeight;
+		currentY += cardHeight + padding;
 		currentX = startX;
 		for(Card c : blueBoard) {
-			g.drawImage(c.getImage(), currentX, currentY, cardWidth, cardHeight, null);
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
 			currentX += cardWidth + padding;
 		}
 	}
