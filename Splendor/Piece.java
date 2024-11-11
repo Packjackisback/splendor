@@ -9,8 +9,8 @@ import javax.swing.JPanel;
 public abstract class Piece {
 	private int x,y;
 	private int width, height;
-	private String type;
-	private BufferedImage image;
+	private final String type;
+	private final BufferedImage image;
 	
 	// Animation variables
 	
