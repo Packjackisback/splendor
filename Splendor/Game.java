@@ -6,6 +6,7 @@ import java.util.Stack;
 import javax.swing.JPanel;
 
 public class Game {
+<<<<<<< Updated upstream
 	private JPanel gamePanel;
 	private ArrayList<ArrayList<Token>> tokenBank;
 	private Stack<Card> greenCards;
@@ -18,6 +19,19 @@ public class Game {
 	private Card testingCard;
 	private boolean firstCalculation;
 	private int x, y, width, height;
+=======
+	JPanel gamePanel;
+	HashMap<Token, Integer> tokenBank;
+	Stack<Card> greenCards;
+	Stack<Card> yellowCards;
+	Stack<Card> blueCards;
+	ArrayList<Noble> nobleBank = new ArrayList<Noble>();
+	ArrayList<Card> greenBoard;
+	ArrayList<Card> yellowBoard;
+	ArrayList<Card> blueBoard;
+	Card testingCard;
+	int x, y, width, height;
+>>>>>>> Stashed changes
 	
 	public Game(JPanel panel) {
 		//TODO implement reading from csv file
@@ -35,6 +49,7 @@ public class Game {
 		blueBoard = new ArrayList<Card>();
 		yellowBoard = new ArrayList<Card>();
 		
+<<<<<<< Updated upstream
 		tokenBank = new ArrayList<ArrayList<Token>>();
 		nobleBank = new ArrayList<Noble>();
 		
@@ -72,6 +87,27 @@ public class Game {
 			nobleBank.add(new Noble(null));
 		}
 		//testingCard = new Card(Generator.loadImage("Splendor/assets/BlueCard.jpg"), new Gem("Blue"), 1, new HashMap(), 1);
+=======
+		tokenBank = new HashMap<Token, Integer>();
+		
+		tokenBank.put(new Token("Splendor/assets/tokens/GoldToken.jpg", new Gem("Wild")), 5);
+		tokenBank.put(new Token("Splendor/assets/tokens/BlueToken.jpg", new Gem("Blue")), 7);
+		tokenBank.put(new Token("Splendor/assets/tokens/BrownToken.jpg", new Gem("Brown")), 7);
+		tokenBank.put(new Token("Splendor/assets/tokens/GreenToken.jpg", new Gem("Green")), 7);
+		tokenBank.put(new Token("Splendor/assets/tokens/RedToken.jpg", new Gem("Red")), 7);
+		tokenBank.put(new Token("Splendor/assets/tokens/WhiteToken.jpg", new Gem("White")), 7);
+
+		Stack[] cardStacks = Generator.getCards(); //Generate cards and shuffle
+
+		blueCards = cardStacks[0];
+		Collections.shuffle(blueCards);
+		yellowCards = cardStacks[1];
+		Collections.shuffle(yellowCards);
+		greenCards = cardStacks[2];
+		Collections.shuffle(greenCards);
+		dealCards();
+
+>>>>>>> Stashed changes
 	}
 
 	// Getters
@@ -90,7 +126,7 @@ public class Game {
 		cards.add(greenCards);
 		return cards;
 	}
-	public ArrayList<ArrayList<Token>> getTokens() { return tokenBank; }
+	public HashMap<Token, Integer> getTokens() { return tokenBank; }
 	public ArrayList<Noble> getNobles() { return nobleBank; }
 	public int getX() { return x; }
 	public int getY() { return y; }
@@ -215,6 +251,7 @@ public class Game {
         }
         
         // Calculating coords for the tokens
+<<<<<<< Updated upstream
         for (int i = 0; i < tokenBank.size(); i++) {
         	for (int j = 0; j < tokenBank.get(i).size(); j++) {
         		Token t = tokenBank.get(i).get(j);
@@ -237,6 +274,19 @@ public class Game {
         }
         
         firstCalculation = false;
+=======
+        //for (int i = 0; i < tokenBank.size(); i++) {
+        //	for (int j = 0; j < tokenBank.get(i).size(); j++) {
+        //		Token t = tokenBank.get(i).get(j);
+        //		int xOffset = (int)(blueBoard.get(0).getX() + (i * (cardSpacingX * 5.0)));
+        //		int yOffset = (int)(y + (cardSpacingY * 2));
+        //		t.setX(xOffset);
+        //		t.setY(yOffset);
+        //		t.setWidth((int)chipRadius);
+        //		t.setHeight((int)chipRadius);
+        //	}
+        //}
+>>>>>>> Stashed changes
 	}
 	
 	public Card drawCard(int x, int y) {
@@ -279,10 +329,43 @@ public class Game {
 	}
 
 	public void drawCards(Graphics g, int startX, int startY, int cardWidth, int cardHeight) {
+<<<<<<< Updated upstream
 		// also includes the
 		testingCard.draw(g, startX, startY, cardWidth, cardHeight);
 		// Above is just testing, eventually this will hold the Lists of Cards, and this
 		// will display them
 		// TODO Implement drawing 2d array of cards
+=======
+		int padding = 5; //Change to affect padding
+		int currentX = startX, currentY = startY;
+		for(Card c : greenBoard) {
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
+			currentX += cardWidth + padding;
+		}
+		currentY += cardHeight + padding;
+		currentX = startX;
+		for(Card c : yellowBoard) {
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
+			currentX += cardWidth + padding;
+		}
+		currentY += cardHeight + padding;
+		currentX = startX;
+		for(Card c : blueBoard) {
+			c.draw(g, currentX, currentY, cardWidth, cardHeight);
+			currentX += cardWidth + padding;
+		}
+>>>>>>> Stashed changes
+	}
+//DRAWING THE TEXT SCREEN
+	public void drawTokens(Graphics g, int startX, int startY, int tokenSize) {
+		int currentX = startX;
+		int imageY = startY + tokenSize/5; //segmenting 1/6 for the number of tokens
+		g.setColor(Color.BLACK);
+		for(Token t : tokenBank.keySet()) {
+			System.out.println(tokenBank.get(t));
+			g.drawString("" + tokenBank.get(t), currentX, startY);
+			t.draw(g, currentX, imageY, tokenSize, tokenSize);
+			currentX += tokenSize + 10;
+		}
 	}
 }
