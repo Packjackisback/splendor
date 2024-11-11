@@ -2,7 +2,7 @@ package Splendor;
 import java.util.*;
 public class Hand {
 private HashMap <Gem,Integer> credits ;
-private ArrayList<ArrayList<Token>> chips;
+private HashMap <Chip, Integer> chips;
 private ArrayList<ArrayList<Card>> cards;
 private int playerNum;
 private ArrayList<Noble> nobles ;
@@ -13,13 +13,13 @@ public Hand (int num)
 {
 	playerNum = num; 
 	score= 0; 
-	chips = new ArrayList<ArrayList<Token>>();
+	chips = new HashMap<Chip, Integer>();
 	cards = new ArrayList<ArrayList<Card>>();
 	nobles= new ArrayList<Noble>();
 	reservedCards = new ArrayList<Card>();
 	credits = new HashMap<Gem, Integer>();
 }
- public ArrayList<ArrayList<Token>> getChips(){ return chips;}
+ public HashMap <Chip,Integer> getChips(){ return chips;}
  public ArrayList<ArrayList<Card>> getCard() {return cards;}
  public ArrayList<Noble> getNobles(){return nobles;}
  public int getScore() {return score;}
@@ -67,8 +67,14 @@ public Hand (int num)
 	
 	score+=x.getWorth();
 
-
  }
-}
+ public void addChip(Chip chip)
+ {
+	 if (chips.containsKey(chip))
+	 {
+		 chips.replace(chip, chips.get(chip)+1);
+	 }
+	 else
+		 chips.put(chip,1);
  }
 }
