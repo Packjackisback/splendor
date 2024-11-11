@@ -118,4 +118,30 @@ public class Generator {
 
         return cards;
     }
+    public static BufferedImage getTokenImg(Gem gem) {
+        BufferedImage img = null;
+        switch(gem.getGemType()) {
+            case "Wild":
+                img = Generator.loadImage("Splendor/assets/tokens/GoldToken.jpg");
+                break;
+            case "Red":
+                img = Generator.loadImage("Splendor/assets/tokens/RedToken.jpg");
+                break;
+            case "Blue":
+                img = Generator.loadImage("Splendor/assets/tokens/BlueToken.jpg");
+                break;
+            case "Green":
+                img = Generator.loadImage("Splendor/assets/tokens/GreenToken.jpg");
+                break;
+            case "White":
+                img = Generator.loadImage("Splendor/assets/tokens/WhiteToken.jpg");
+                break;
+            case "Black":
+                img = Generator.loadImage("Splendor/assets/tokens/BrownToken.jpg");
+                break;
+            default:
+                throw(new RuntimeException("Invalid token gem:" + gem.getGemType()));
+        }
+    return img;
+    }
 }

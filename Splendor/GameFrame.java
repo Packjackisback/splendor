@@ -2,8 +2,8 @@ package Splendor;
 import javax.swing.*;
 
 public class GameFrame extends JFrame {
-    private int WIDTH;
-    private int HEIGHT;
+    private final int WIDTH;
+    private final int HEIGHT;
     public GameFrame() {
         super("Splendor");
         WIDTH = 1920;

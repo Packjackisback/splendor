@@ -4,8 +4,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
 public class Noble extends Piece implements Drawable{
-	private int worth;
-	private HashMap<Gem, Integer> cost;
+	private final int worth;
+	private final HashMap<Gem, Integer> cost;
 
 	
 	public Noble(String img, HashMap<Gem, Integer> cost) {

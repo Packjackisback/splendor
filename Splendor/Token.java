@@ -1,14 +1,15 @@
+package Splendor;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Token extends Piece implements Drawable{
-	private Gem gem;
-	private boolean isWild;
-	
-	public Token(BufferedImage img, Gem g, boolean wild) {
-		super("Token", img);
+	private final Gem gem;
+	private final boolean isWild;
+
+	public Token(Gem g) {
+		super("Token", Generator.getTokenImg(g));
 		gem = g;
-		isWild = wild;
+		isWild = g.getGemType().equals("Wild");
 	}
 
 	public boolean isWild() {

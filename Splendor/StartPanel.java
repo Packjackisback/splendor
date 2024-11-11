@@ -12,7 +12,6 @@ public class StartPanel extends JPanel{
             background = ImageIO.read(StartPanel.class.getResource("/Splendor/assets/start background.PNG"));
         } catch (Exception E) {
             System.out.println("Exception Error");
-            return;
         }
     }
 

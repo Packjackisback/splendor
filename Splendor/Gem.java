@@ -1,7 +1,7 @@
 package Splendor;
 
 public class Gem {
-    private String gemType;
+    private final String gemType;
     public Gem(String gemType) {
         this.gemType = gemType;
     }
