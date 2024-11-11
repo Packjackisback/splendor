@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
-    private Game game;  // Reference to the Game instance
+    private final Game game;  // Reference to the Game instance
 
     public GamePanel(Game game) {
         this.game = game;  // Initialize with the Game instance

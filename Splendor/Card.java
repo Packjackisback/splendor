@@ -21,8 +21,7 @@ public class Card extends Piece implements Drawable{
 
 	public Card() { // ONLY FOR TESTING, REMOVE WHEN DONE
 		super("Card", null);
-		return;
-	}
+    }
 
 	public void flip() {
 		isOnBack = !isOnBack;
