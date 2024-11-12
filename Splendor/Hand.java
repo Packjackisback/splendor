@@ -87,4 +87,11 @@ public class Hand {
 
 
     }
+    public void addChip(Chip chip)
+    {
+    	if (chips.containsKey(chip))
+    	    chips.replace(chip, chips.get(chip)+1);
+    	else
+    	    chips.put(chip,1);
+    }
 }
