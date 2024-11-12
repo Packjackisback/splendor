@@ -59,4 +59,8 @@ public class Hand {
     public void addCard(Card c) {
     	cards.get(c.getGem()).add(c);
     }
+    
+    public void addToken(Token t) {
+    	tokens.get(t.getGem()).add(t);
+    }
 }
