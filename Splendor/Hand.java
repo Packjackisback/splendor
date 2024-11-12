@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Hand {
     private final HashMap<Gem, Integer> credits;
-    private final ArrayList<ArrayList<Token>> chips;
+    private final HashMap<Token, Integer> chips;
     private final ArrayList<ArrayList<Card>> cards;
     private int playerNum;
     private final ArrayList<Noble> nobles;
@@ -17,14 +17,14 @@ public class Hand {
     public Hand(int num) {
         playerNum = num;
         score = 0;
-        chips = new ArrayList<ArrayList<Token>>();
+        chips = new HashMap<Token, Integer>();
         cards = new ArrayList<ArrayList<Card>>();
         nobles = new ArrayList<Noble>();
         reservedCards = new ArrayList<Card>();
         credits = new HashMap<Gem, Integer>();
     }
 
-    public ArrayList<ArrayList<Token>> getChips() {
+    public HashMap<Token, Integer> getChips() {
         return chips;
     }
 
@@ -87,11 +87,11 @@ public class Hand {
 
 
     }
-    public void addChip(Chip chip)
+    public void addChip(Token token)
     {
-    	if (chips.containsKey(chip))
-    	    chips.replace(chip, chips.get(chip)+1);
+    	if (chips.containsKey(token))
+    	    chips.put(token, chips.get(token)+1);
     	else
-    	    chips.put(chip,1);
+    	    chips.put(token,1);
     }
 }
