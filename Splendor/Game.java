@@ -52,9 +52,18 @@ public class Game {
 		greenCards = cardStacks[2];
 		Collections.shuffle(greenCards);
 		dealCards();
-
+		
+		ArrayList<Noble> nobles = Generator.getNobles();
+		Collections.shuffle(nobles);
+		for (int i = 0; i < 5; i++) {
+			nobleBank.add(nobles.get(i));
+		}
 	}
 
+	public void setPanel(JPanel panel) {
+		gamePanel = panel;
+	}
+	
 	// Getters
 	public ArrayList<ArrayList<Card>> getCardArray() {
 		// Not sure what this is for, but this is in the UML
@@ -270,46 +279,36 @@ public class Game {
 	}
 
 	// Draw methods
-	public void drawNobles(Graphics g, int startX, int startY, int tokenBankWidth, int tokenBankHeight) {
-		int availableSpaceY = tokenBankHeight/6 - 30; //Available space for each token minus total padding (5*6)
-		int currentY = startY;
-
+	public void drawNobles(Graphics g) {
 		for(Noble n : nobleBank) {
-			n.draw(g, startX, currentY, tokenBankWidth, availableSpaceY);
-			currentY += availableSpaceY + 5;
+			n.draw(g);
 		}
 	}
 
-	public void drawCards(Graphics g, int startX, int startY, int cardWidth, int cardHeight) {
-		int padding = 5; //Change to affect padding
-		int currentX = startX, currentY = startY;
+	public void drawCards(Graphics g) {
 		for(Card c : greenBoard) {
-			c.draw(g, currentX, currentY, cardWidth, cardHeight);
-			currentX += cardWidth + padding;
+			c.draw(g);
 		}
-		currentY += cardHeight + padding;
-		currentX = startX;
+		
 		for(Card c : yellowBoard) {
-			c.draw(g, currentX, currentY, cardWidth, cardHeight);
-			currentX += cardWidth + padding;
+			c.draw(g);
 		}
-		currentY += cardHeight + padding;
-		currentX = startX;
+		
 		for(Card c : blueBoard) {
-			c.draw(g, currentX, currentY, cardWidth, cardHeight);
-			currentX += cardWidth + padding;
+			c.draw(g);
 		}
+		
+		blueCards.peek().draw(g);
+		yellowCards.peek().draw(g);
+		greenCards.peek().draw(g);
 	}
 //DRAWING THE TEXT SCREEN
-	public void drawTokens(Graphics g, int startX, int startY, int tokenSize) {
-		int currentX = startX;
-		int imageY = startY + tokenSize/5; //segmenting 1/6 for the number of tokens
+	public void drawTokens(Graphics g) {
 		g.setColor(Color.BLACK);
 		for(Token t : tokenBank.keySet()) {
-			System.out.println(tokenBank.get(t));
-			g.drawString("" + tokenBank.get(t), currentX, startY);
-			t.draw(g, currentX, imageY, tokenSize, tokenSize);
-			currentX += tokenSize + 10;
+			//System.out.println(tokenBank.get(t));
+			g.drawString("" + tokenBank.get(t), t.getX(), t.getY());
+			t.draw(g);
 		}
 	}
 }

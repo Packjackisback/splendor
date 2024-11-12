@@ -8,6 +8,7 @@ public class GamePanel extends JPanel {
 
     public GamePanel(Game game) {
         this.game = game;  // Initialize with the Game instance
+        game.setPanel(this);
         setPreferredSize(new Dimension(1920, 1080)); // Set a preferred size
         setVisible(true);
     }
@@ -16,8 +17,9 @@ public class GamePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Call the drawCards method of the Game instance to draw the cards
-        game.drawCards(g, 0, 130, 160, 240); // Starting x, y, card width, card height, padding
-        game.drawNobles(g, 680, 0, 100, 800);
-        game.drawTokens(g, 0, 0, 100);
+        game.calculateCoords(getWidth(), getHeight(), getWidth()/2, getHeight()/2);
+        game.drawCards(g); // Starting x, y, card width, card height, padding
+        game.drawNobles(g);
+        game.drawTokens(g);
     }
 }

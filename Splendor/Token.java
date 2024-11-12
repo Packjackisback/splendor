@@ -21,7 +21,7 @@ public class Token extends Piece implements Drawable{
 	}
 	
 	@Override
-	public void draw(Graphics g, int x, int y, int width, int height) {
-		g.drawImage(super.getImage(), x, y, width, height, null);
+	public void draw(Graphics g) {
+		g.drawImage(super.getImage(), getX(), getY(), getWidth(), getHeight(), null);
 	}
 }
