@@ -1,5 +1,6 @@
 package Splendor;
 import javax.swing.*;
+import java.awt.event.MouseListener;
 
 public class GameFrame extends JFrame {
     private final int WIDTH;
@@ -16,5 +17,8 @@ public class GameFrame extends JFrame {
         getContentPane().removeAll();
         getContentPane().add(panel);
         pack();
+    }
+    public void addMouseListener(MouseListener l) {
+        getContentPane().addMouseListener(l);
     }
 }
