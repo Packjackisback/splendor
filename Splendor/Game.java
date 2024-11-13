@@ -1,12 +1,14 @@
 package Splendor;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Stack;
 
-import javax.swing.JPanel;
+import javax.swing.*;
 
 public class Game {
 	private final HashMap<Token, Integer> tokenBank;
@@ -21,9 +23,14 @@ public class Game {
 	private boolean firstCalculation;
 	private int x, y, width, height;
 	JPanel gamePanel;
+	private Hand[] playerHands;
 
 	
 	public Game() throws IOException {
+		playerHands = new Hand[4];
+		for(int i = 0; i < playerHands.length; i++) {
+			playerHands[i]= new Hand(i);
+		}
 		firstCalculation = true;
 		blueCards = new Stack<Card>();
 		yellowCards = new Stack<Card>();
@@ -277,6 +284,47 @@ public class Game {
 			blueBoard.add(blueCards.pop());
 		}
 	}
+
+	//If we need to display a message, like for an incorrect move or asking if you want to use a wild
+	public static void showToast(String message, Runnable buttonClickCallback) {
+		JDialog toastDialog = new JDialog();
+		toastDialog.setTitle("Information");
+		toastDialog.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
+		toastDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		toastDialog.setSize(300, 150);
+		toastDialog.setLocationRelativeTo(null);
+
+		JPanel contentPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.insets = new Insets(10, 10, 10, 10);
+
+		JLabel messageLabel = new JLabel(message);
+		messageLabel.setHorizontalAlignment(JLabel.CENTER);
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 1.0;
+		gbc.weighty = 1.0;
+		contentPanel.add(messageLabel, gbc);
+
+		JButton actionButton = new JButton("Okay");
+		actionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				toastDialog.dispose();
+				buttonClickCallback.run();
+			}
+		});
+		gbc.gridx = 0;
+		gbc.gridy = 1;
+		gbc.weighty = 0.0;
+		contentPanel.add(actionButton, gbc);
+
+		toastDialog.setContentPane(contentPanel);
+		toastDialog.setVisible(true);
+	}
+
+
+
 
 	// Draw methods
 	public void drawNobles(Graphics g) {

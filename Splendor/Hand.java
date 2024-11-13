@@ -47,10 +47,23 @@ public class Hand {
         while (iter.hasNext()) {
             Gem gem = iter.next();
             int amt = cards.get(gem).size() + tokens.get(gem).size();
+
             if (amt >= cost.get(gem)) {
             	check = true;
             } else {
+                //Implement asking for cards
+                if(tokens.get(new Gem("Wild")).size()+amt>=cost.get(gem)) {
+                    final boolean[] useWild = {false};
+                    Runnable doYouWantAWild = new Runnable() {
+                        public void run() {
+                            useWild[0] = true;
+                            System.out.println("Using wild");
+                        }
+                    };
+                    Game.showToast("Do you want to use your wild?", doYouWantAWild);
+                }
             	check = false;
+                break;
             }
         }
         return check;
