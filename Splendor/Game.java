@@ -29,7 +29,7 @@ public class Game {
 	public Game() throws IOException {
 		playerHands = new Hand[4];
 		for(int i = 0; i < playerHands.length; i++) {
-			playerHands[i]= new Hand(i);
+			playerHands[i]= new Hand(i, this);
 		}
 		firstCalculation = true;
 		blueCards = new Stack<Card>();
@@ -236,20 +236,14 @@ public class Game {
         }
         
         firstCalculation = false;
-        //for (int i = 0; i < tokenBank.size(); i++) {
-        //	for (int j = 0; j < tokenBank.get(i).size(); j++) {
-        //		Token t = tokenBank.get(i).get(j);
-        //		int xOffset = (int)(blueBoard.get(0).getX() + (i * (cardSpacingX * 5.0)));
-        //		int yOffset = (int)(y + (cardSpacingY * 2));
-        //		t.setX(xOffset);
-        //		t.setY(yOffset);
-        //		t.setWidth((int)chipRadius);
-        //		t.setHeight((int)chipRadius);
-        //	}
-        //}
 	}
 	//
-	public Card drawCard(int x, int y) {
+	public Noble takeNoble(Noble y) {
+		Noble out = y;
+		nobleBank.remove(y)
+		return(out);
+	}
+	public Card takeCard(int x, int y) {
 		// This needs to be followed with a call to the class to redraw the cards
 		Card out;
 		switch (y) {
@@ -286,9 +280,9 @@ public class Game {
 	}
 
 	//If we need to display a message, like for an incorrect move or asking if you want to use a wild
-	public static void showToast(String message, Runnable buttonClickCallback) {
+	public static void showToast(String message, String title, String buttonText, Runnable buttonClickCallback) {
 		JDialog toastDialog = new JDialog();
-		toastDialog.setTitle("Information");
+		toastDialog.setTitle(title);
 		toastDialog.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 		toastDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		toastDialog.setSize(300, 150);
@@ -306,7 +300,7 @@ public class Game {
 		gbc.weighty = 1.0;
 		contentPanel.add(messageLabel, gbc);
 
-		JButton actionButton = new JButton("Okay");
+		JButton actionButton = new JButton(buttonText);
 		actionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -13,7 +13,9 @@ public class Noble extends Piece implements Drawable{
 		this.cost = cost;
 		this.worth = 3;
 	}
-	
+	public HashMap<Gem, Integer> getCost() {
+		return cost;
+	}
 	public int getWorth() { return worth; }
 
 	@Override
