@@ -286,9 +286,9 @@ public class Game {
 	}
 
 	//If we need to display a message, like for an incorrect move or asking if you want to use a wild
-	public static void showToast(String message, Runnable buttonClickCallback) {
+	public static void showToast(String message, String title, String buttonText, Runnable buttonClickCallback) {
 		JDialog toastDialog = new JDialog();
-		toastDialog.setTitle("Information");
+		toastDialog.setTitle(title);
 		toastDialog.setModalityType(JDialog.ModalityType.APPLICATION_MODAL);
 		toastDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		toastDialog.setSize(300, 150);
@@ -306,7 +306,7 @@ public class Game {
 		gbc.weighty = 1.0;
 		contentPanel.add(messageLabel, gbc);
 
-		JButton actionButton = new JButton("Okay");
+		JButton actionButton = new JButton(buttonText);
 		actionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

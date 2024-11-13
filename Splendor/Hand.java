@@ -60,7 +60,7 @@ public class Hand {
                             System.out.println("Using wild");
                         }
                     };
-                    Game.showToast("Do you want to use your wild?", doYouWantAWild);
+                    Game.showToast("Do you want to use your wild?", "Use your token?","Yes",doYouWantAWild);
                 }
             	check = false;
                 break;

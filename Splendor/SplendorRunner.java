@@ -16,7 +16,7 @@ public class SplendorRunner {
 
 
         gameFrame.setPanel(testing);
-
+        
 
     }
     public static void setUpGame() {
