@@ -52,7 +52,8 @@ public class Hand {
             	check = true;
             } else {
                 //Implement asking for cards
-                if(tokens.get(new Gem("Wild")).size()+amt>=cost.get(gem)) {
+                int wildsNeeded=cost.get(gem)-amt;
+                if(tokens.get(new Gem("Wild")).size()>wildsNeeded) {
                     final boolean[] useWild = {false};
                     Runnable doYouWantAWild = new Runnable() {
                         public void run() {
@@ -60,7 +61,11 @@ public class Hand {
                             System.out.println("Using wild");
                         }
                     };
-                    Game.showToast("Do you want to use your wild?", "Use your token?","Yes",doYouWantAWild);
+                    Game.showToast("Do you want to use your " + wildsNeeded + " wilds?", "Use your wild(s)?","Yes",doYouWantAWild);
+                    for(int i = 0; i<wildsNeeded; i++) {
+                        tokens.get(new Gem("Wild")).remove(0);
+                    }
+                    break;
                 }
             	check = false;
                 break;

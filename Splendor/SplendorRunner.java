@@ -16,7 +16,7 @@ public class SplendorRunner {
 
 
         gameFrame.setPanel(testing);
-        
+        System.out.println(Generator.loadImage("Splendor/assets/Cards/01.jpg"));
 
     }
     public static void setUpGame() {
