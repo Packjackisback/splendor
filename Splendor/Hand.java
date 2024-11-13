@@ -13,11 +13,12 @@ public class Hand {
     private final ArrayList<Noble> nobles;
     private int score;
     private final ArrayList<Card> reservedCards;
-    
+    private Game game;
     private int x, y, width, height;
     private String playerName;
 
-    public Hand(int num) {
+    public Hand(int num, Game game) {
+        this.game = game;
         playerNum = num;
         score = 0;
         tokens = new HashMap<Gem, ArrayList<Token>>();
@@ -73,6 +74,15 @@ public class Hand {
         }
         return check;
     }
+    public boolean canAffordNoble(Noble x) {
+        boolean check = false;
+        for(Gem g : x.getCost().keySet()) {
+            if(cards.get(g).size()<x.getCost().get(g)) {
+                check=false;
+            }
+        }
+        return check;
+    }
 
     public void addCard(Card c) {
     	cards.get(c.getGem()).add(c);
@@ -80,5 +90,18 @@ public class Hand {
     
     public void addToken(Token t) {
     	tokens.get(t.getGem()).add(t);
+    }
+    public void addNoble(Noble n) {
+        nobles.add(n);
+    }
+
+
+    public void drawTurn(Object o) {
+        if(o.getClass().getSimpleName().equals("Noble")) {
+            if(canAffordNoble((Noble)o)) {
+                game.takeNoble((Noble) o);
+                //TODO implement turn over
+            }
+        }
     }
 }
