@@ -33,7 +33,7 @@ public class StartPanel extends JPanel implements MouseListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (fading) {
-                    alpha += 0.05f;
+                    alpha += 0.02f;
                     if (alpha >= 1.0f) {
                         alpha = 1.0f;
                         fading = false;
