@@ -27,6 +27,8 @@ public abstract class Piece {
 	// Getters
 	public int getX() { return x; }
 	public int getY() { return y; }
+	public int getWidth() { return width; }
+	public int getHeight() { return height; }
 	public BufferedImage getImage() { return image; }
 	public String getType() { return type; }
 	public boolean isInAnimation() { return inAnimation; }
