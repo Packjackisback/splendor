@@ -243,7 +243,12 @@ public class Game {
 		nobleBank.remove(y)
 		return(out);
 	}
-	public Card takeCard(int x, int y) {
+	public Token takeToken(Token t) {
+		if() {
+
+		}
+	}
+	public Card takeCardXY(int x, int y) {
 		// This needs to be followed with a call to the class to redraw the cards
 		Card out;
 		switch (y) {
@@ -262,6 +267,19 @@ public class Game {
 		}
 		dealCards();
 		return out;
+	}
+	public Card takeCard(Card c) {
+		Card out;
+		if(greenBoard.contains(c)) {
+			greenBoard.remove(c);
+		}
+		if(blueBoard.contains(c)) {
+			blueBoard.remove(c);
+		}
+		if(yellowBoard.contains(c)) {
+			yellowBoard.remove(c);
+		}
+		return c;
 	}
 
 	public void dealCards() {
