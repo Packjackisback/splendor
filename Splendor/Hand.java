@@ -95,7 +95,7 @@ public class Hand {
         nobles.add(n);
     }
 
-
+    private int drawnTokens;
     public void drawTurn(Object o) {
         if(o.getClass().getSimpleName().equals("Noble")) {
             if(canAffordNoble((Noble)o)) {
@@ -103,5 +103,15 @@ public class Hand {
                 //TODO implement turn over
             }
         }
+        if(o.getClass().getSimpleName().equals("Card")) {
+            if(canAfford((Card) o)) {
+                game.takeCard((Card)o);
+                //TODO implement turn over
+            }
+        }
+        if(o.getClass().getSimpleName().equals("Token")) {
+             //passing to another method because it is gonna be complex
+        }
     }
+
 }
