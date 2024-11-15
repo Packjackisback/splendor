@@ -30,6 +30,8 @@ public class GamePanel extends JPanel {
         // Call the drawCards method of the Game instance to draw the cards
         game.calculateCoords(getWidth(), getHeight(), getWidth()/2, getHeight()/2);
         g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        g.setColor(new Color(255, 255, 255, 127));
+        g.fillRect(getWidth()/4, getHeight()/4, getWidth()/2, getHeight()/2);
         game.drawCards(g); // Starting x, y, card width, card height, padding
         game.drawNobles(g);
         game.drawTokens(g);

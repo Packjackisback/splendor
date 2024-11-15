@@ -15,7 +15,7 @@ public class SplendorRunner {
         testing3.addMouseListener(testing3);
 
 
-        gameFrame.setPanel(testing);
+        gameFrame.setPanel(testing3);
         System.out.println(Generator.loadImage("Splendor/assets/Cards/01.jpg"));
 
     }
