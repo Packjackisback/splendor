@@ -16,7 +16,7 @@ public class EndPanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        // Call the drawCards method of the Game instance to draw the cards
         g.drawImage(background, 0, 0, null);
+        //TODO add scores
     }
 }
