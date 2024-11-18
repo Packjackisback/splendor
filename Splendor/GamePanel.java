@@ -51,7 +51,9 @@ public class GamePanel extends JPanel {
 		testHand1.addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 1));
 		testHand1.addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 1));
 		testHand1.addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 1));
-		
+        testHand1.addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 1));
+        testHand1.addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 1));
+
 		testHand3.addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 1));
 		testHand3.addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 1));
 		testHand3.addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 1));
@@ -83,6 +85,8 @@ public class GamePanel extends JPanel {
         testHand2.calculateCoords(getWidth(), getHeight());
         testHand3.calculateCoords(getWidth(), getHeight());
         g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
+        g.setColor(new Color(255, 255, 255, 127));
+        g.fillRect(getWidth()/4, getHeight()/4, getWidth()/2, getHeight()/2);
         game.drawCards(g); // Starting x, y, card width, card height, padding
         game.drawNobles(g);
         game.drawTokens(g);

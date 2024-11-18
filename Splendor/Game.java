@@ -254,14 +254,16 @@ public class Game {
 	
 	public Noble takeNoble(Noble y) {
 		Noble out = y;
-		nobleBank.remove(y)
+		nobleBank.remove(y);
 		return(out);
 	}
 
 	public Token takeToken(Token t) {
-		if() {
-
+		if(tokenBank.get(t)>0) {
+			tokenBank.put(t, tokenBank.get(t)-1);
+			return(t);
 		}
+		return null;
 	}
 
 	public Card takeCardXY(int x, int y) {
@@ -285,18 +287,48 @@ public class Game {
 		return out;
 	}
 
+//	public Card pickCard(Card c) {
+//		Card out;
+//		if (greenCards.contains(c)) {
+//			greenCards.remove(c);
+//		}
+//		if (blueCards.contains(c)) {
+//			blueBoard.remove(c);
+//		}
+//		if (yellowBoard.contains(c)) {
+//			yellowBoard.remove(c);
+//		}
+//		return c;
+//	}
 	public Card takeCard(Card c) {
-		Card out;
-		if (greenBoard.contains(c)) {
-			greenBoard.remove(c);
+		//Drawing a card from the stack
+		if(greenCards.contains(c)) {
+			System.out.println("green");
+			greenCards.remove(c);
+			dealCards();
+			gamePanel.revalidate();
+			gamePanel.repaint();
+			return c;
 		}
-		if (blueBoard.contains(c)) {
-			blueBoard.remove(c);
+		if(yellowCards.contains(c)) {
+			System.out.println("yellow");
+			yellowCards.remove(c);
+			dealCards();
+			gamePanel.revalidate();
+			gamePanel.repaint();
+			return c;
 		}
-		if (yellowBoard.contains(c)) {
-			yellowBoard.remove(c);
+		if(blueCards.contains(c)) {
+			System.out.println("blue");
+			blueCards.remove(c);
+			dealCards();
+			gamePanel.revalidate();
+			gamePanel.repaint();
+			return c;
 		}
-		return c;
+
+		System.out.println("Not found :(");
+		return null;
 	}
 	
 	public Card drawCard(int x, int y) {
