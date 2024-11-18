@@ -254,14 +254,15 @@ public class Game {
 	
 	public Noble takeNoble(Noble y) {
 		Noble out = y;
-		nobleBank.remove(y)
+		nobleBank.remove(y);
 		return(out);
 	}
 
 	public Token takeToken(Token t) {
-		if() {
+		if(true) {
 
 		}
+		return null;
 	}
 
 	public Card takeCardXY(int x, int y) {
