@@ -27,13 +27,13 @@ public class Game {
 	private int x, y, width, height;
 	JPanel gamePanel;
 
-	
+
 	public Game() throws IOException {
 		firstCalculation = true;
 		blueCards = new Stack<Card>();
 		yellowCards = new Stack<Card>();
 		greenCards = new Stack<Card>();
-		
+
 		greenBoard = new ArrayList<Card>();
 		blueBoard = new ArrayList<Card>();
 		yellowBoard = new ArrayList<Card>();
@@ -56,7 +56,7 @@ public class Game {
 		Collections.shuffle(yellowCards);
 		greenCards = cardStacks[2];
 		Collections.shuffle(greenCards);
-		
+
 		ArrayList<Noble> nobles = Generator.getNobles();
 		Collections.shuffle(nobles);
 		for (int i = 0; i < 5; i++) {
@@ -67,7 +67,7 @@ public class Game {
 	public void setPanel(JPanel panel) {
 		gamePanel = panel;
 	}
-	
+
 	// Getters
 	public ArrayList<ArrayList<Card>> getCardArray() {
 		// Not sure what this is for, but this is in the UML
@@ -93,193 +93,196 @@ public class Game {
 	//Animation methods
 	public boolean isInAnimation() {
 		boolean inAnimation = false;
-		
+
 		ArrayList<ArrayList<Card>> cards = getCardArray();
 		for (int i = 0; i < cards.size(); i++) {
 			for (int j = 0; j < cards.get(i).size(); j++) {
-                if (cards.get(i).get(j).isInAnimation()) {
-                    inAnimation = true;
-                    break;
-                }
+				if (cards.get(i).get(j).isInAnimation()) {
+					inAnimation = true;
+					break;
+				}
 			}
 		}
-		
+
 		return inAnimation;
 	}
-	
+
 	public void calculateCoords(int frameWidth, int frameHeight, double xCenter, double yCenter) {
 		double cardWidth = frameWidth / 23.5;
-        double cardHeight = frameHeight / 9.0;
-        double cardSpacingX = cardWidth * 0.2; // 20%
-        double cardSpacingY = cardHeight * 0.2;
-        
-        double chipRadius = frameWidth / 45.0;
-        double chipSpacing = chipRadius * 0.4;
-        
-        double nobleWidth = frameWidth / 30.0;
-        double nobleSpacing = nobleWidth * 0.3;
-        
-        width = (int) (frameWidth * .45);
-        height = (int) (frameHeight * .5);
-        
-        x = (int)(xCenter - width/2);
-        y = (int)(yCenter - height/2);
-        
-        // Calculating the coords for the draw cards
-        int drawCardsXOffset = (int)(x + (cardSpacingX * 4));
-        for (Card c : blueCards) {
-        	c.setWidth((int)cardWidth);
-        	c.setHeight((int)cardHeight);
-        	c.setX(drawCardsXOffset);
-        	c.setY((int)(y + cardSpacingY * 4));
-        }
-        for (Card c : yellowCards) {
-        	c.setWidth((int)cardWidth);
-        	c.setHeight((int)cardHeight);
-        	c.setX(drawCardsXOffset);
-        	c.setY((int)(blueCards.peek().getY() + cardSpacingY + cardHeight));
-        }
-        for (Card c : greenCards) {
-        	c.setWidth((int)cardWidth);
-        	c.setHeight((int)cardHeight);
-        	c.setX(drawCardsXOffset);
-        	c.setY((int)(yellowCards.peek().getY() + cardSpacingY + cardHeight));
-        }
-        // Sets the initial coordinates of the board cards to the deck card stack
-        if (firstCalculation) {
-        	dealCards();
-        	int initX = blueCards.peek().getX();
-        	for (int i = 0; i < 3; i++) {
-            	switch (i) {
-            		case 0:
-            			int initYBlue = blueCards.peek().getY();
-            			for (int j = 1; j <= blueBoard.size(); j++) {
-            				int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
-            				blueBoard.get(j-1).setX(initX);
-            				blueBoard.get(j-1).setY(initYBlue);
-            				blueBoard.get(j-1).setWidth((int)cardWidth);
-            				blueBoard.get(j-1).setHeight((int)cardHeight);
-            				blueBoard.get(j-1).startAnimation(xOffset, initYBlue, gamePanel);
-            			}
-            		case 1:
-            			int initYYellow = yellowCards.peek().getY();
-            			for (int j = 1; j <= yellowBoard.size(); j++) {
-            				int xOffset = (int)(yellowCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
-            				yellowBoard.get(j-1).setX(initX);
-            				yellowBoard.get(j-1).setY(initYYellow);
-            				yellowBoard.get(j-1).setWidth((int)cardWidth);
-            				yellowBoard.get(j-1).setHeight((int)cardHeight);
-            				yellowBoard.get(j-1).startAnimation(xOffset, initYYellow, gamePanel);
-            			}
-            		case 2:
-            			int initYGreen = greenCards.peek().getY();
-            			for (int j = 1; j <= greenBoard.size(); j++) {
-            				int xOffset = (int)(greenCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
-            				greenBoard.get(j-1).setX(initX);
-            				greenBoard.get(j-1).setY(initYGreen);
-            				greenBoard.get(j-1).setWidth((int)cardWidth);
-            				greenBoard.get(j-1).setHeight((int)cardHeight);
-            				greenBoard.get(j-1).startAnimation(xOffset, initYGreen, gamePanel);
-            			}
-            		default: break;
-            	}
-            }
-        }
-        
-        // Calculating the coords for the cards on the board
-        for (int i = 0; i < 3; i++) {
-        	switch (i) {
-        		case 0:	
-        			int yOffsetBlue = blueCards.peek().getY();
-        			for (int j = 1; j <= blueBoard.size(); j++) {
-        				int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
-        				if (!blueBoard.get(j-1).isInAnimation()) {
-	        				blueBoard.get(j-1).setX(xOffset);
-	        				blueBoard.get(j-1).setY(yOffsetBlue);
-	        				blueBoard.get(j-1).setWidth((int)cardWidth);
-	        				blueBoard.get(j-1).setHeight((int)cardHeight);
-        				}
-        			}
-        		case 1:
-        			int yOffsetYellow = yellowCards.peek().getY();
-        			for (int j = 1; j <= yellowBoard.size(); j++) {
-        				int xOffset = (int)(yellowCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
-        				if (!yellowBoard.get(j-1).isInAnimation()) {
-	        				yellowBoard.get(j-1).setX(xOffset);
-	        				yellowBoard.get(j-1).setY(yOffsetYellow);
-	        				yellowBoard.get(j-1).setWidth((int)cardWidth);
-	        				yellowBoard.get(j-1).setHeight((int)cardHeight);
-        				}
-        			}
-        		case 2:
-        			int yOffsetGreen = greenCards.peek().getY();
-        			for (int j = 1; j <= greenBoard.size(); j++) {
-        				int xOffset = (int)(greenCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
-        				if (!greenBoard.get(j-1).isInAnimation()) {
-	        				greenBoard.get(j-1).setX(xOffset);
-	        				greenBoard.get(j-1).setY(yOffsetGreen);
-	        				greenBoard.get(j-1).setWidth((int)cardWidth);
-	        				greenBoard.get(j-1).setHeight((int)cardHeight);
-        				}
-        			}
-        		default: break;
-        	}
-        }
-        
-        // Calculating coords for the tokens
-        for (int i = 0; i < tokenBank.size(); i++) {
-        	for (int j = 0; j < tokenBank.get(new ArrayList(tokenBank.keySet()).get(i)); j++) {
-        		Token t = (Token) new ArrayList(tokenBank.keySet()).get(i);
+		double cardHeight = frameHeight / 9.0;
+		double cardSpacingX = cardWidth * 0.2; // 20%
+		double cardSpacingY = cardHeight * 0.2;
 
-        		int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) + ((cardWidth) * i));
-        		int yOffset = (int)(y + (cardSpacingY * 1.25));
-        		t.setX(xOffset);
-        		t.setY(yOffset);
-        		t.setWidth((int)chipRadius);
-        		t.setHeight((int)chipRadius);
-        	}
-        }
-        
-        // Calculating coords for the nobles
-        for (int i = 0; i < nobleBank.size(); i++) {
-        	int xOffset = (int)(x + cardWidth * 8.5);
-        	int yOffset = (int)((y + (cardSpacingY * 1.25)) + ((nobleWidth + nobleSpacing) * i));
-        	nobleBank.get(i).setX(xOffset);
-        	nobleBank.get(i).setY(yOffset);
-        	nobleBank.get(i).setWidth((int)nobleWidth); nobleBank.get(i).setHeight((int)nobleWidth);
-        }
-        
-        firstCalculation = false;
+		double chipRadius = frameWidth / 45.0;
+		double chipSpacing = chipRadius * 0.4;
+
+		double nobleWidth = frameWidth / 30.0;
+		double nobleSpacing = nobleWidth * 0.3;
+
+		width = (int) (frameWidth * .45);
+		height = (int) (frameHeight * .5);
+
+		x = (int)(xCenter - width/2);
+		y = (int)(yCenter - height/2);
+
+		// Calculating the coords for the draw cards
+		int drawCardsXOffset = (int)(x + (cardSpacingX * 4));
+		for (Card c : blueCards) {
+			c.setWidth((int)cardWidth);
+			c.setHeight((int)cardHeight);
+			c.setX(drawCardsXOffset);
+			c.setY((int)(y + cardSpacingY * 4));
+		}
+		for (Card c : yellowCards) {
+			c.setWidth((int)cardWidth);
+			c.setHeight((int)cardHeight);
+			c.setX(drawCardsXOffset);
+			c.setY((int)(blueCards.peek().getY() + cardSpacingY + cardHeight));
+		}
+		for (Card c : greenCards) {
+			c.setWidth((int)cardWidth);
+			c.setHeight((int)cardHeight);
+			c.setX(drawCardsXOffset);
+			c.setY((int)(yellowCards.peek().getY() + cardSpacingY + cardHeight));
+		}
+		// Sets the initial coordinates of the board cards to the deck card stack
+		if (firstCalculation) {
+			dealCards();
+			int initX = blueCards.peek().getX();
+			for (int i = 0; i < 3; i++) {
+				switch (i) {
+					case 0:
+						int initYBlue = blueCards.peek().getY();
+						for (int j = 1; j <= blueBoard.size(); j++) {
+							int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
+							blueBoard.get(j-1).setX(initX);
+							blueBoard.get(j-1).setY(initYBlue);
+							blueBoard.get(j-1).setWidth((int)cardWidth);
+							blueBoard.get(j-1).setHeight((int)cardHeight);
+							blueBoard.get(j-1).startAnimation(xOffset, initYBlue, gamePanel);
+						}
+					case 1:
+						int initYYellow = yellowCards.peek().getY();
+						for (int j = 1; j <= yellowBoard.size(); j++) {
+							int xOffset = (int)(yellowCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
+							yellowBoard.get(j-1).setX(initX);
+							yellowBoard.get(j-1).setY(initYYellow);
+							yellowBoard.get(j-1).setWidth((int)cardWidth);
+							yellowBoard.get(j-1).setHeight((int)cardHeight);
+							yellowBoard.get(j-1).startAnimation(xOffset, initYYellow, gamePanel);
+						}
+					case 2:
+						int initYGreen = greenCards.peek().getY();
+						for (int j = 1; j <= greenBoard.size(); j++) {
+							int xOffset = (int)(greenCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
+							greenBoard.get(j-1).setX(initX);
+							greenBoard.get(j-1).setY(initYGreen);
+							greenBoard.get(j-1).setWidth((int)cardWidth);
+							greenBoard.get(j-1).setHeight((int)cardHeight);
+							greenBoard.get(j-1).startAnimation(xOffset, initYGreen, gamePanel);
+						}
+					default: break;
+				}
+			}
+		}
+
+		// Calculating the coords for the cards on the board
+		for (int i = 0; i < 3; i++) {
+			switch (i) {
+				case 0:
+					int yOffsetBlue = blueCards.peek().getY();
+					for (int j = 1; j <= blueBoard.size(); j++) {
+						int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
+						if (!blueBoard.get(j-1).isInAnimation()) {
+							blueBoard.get(j-1).setX(xOffset);
+							blueBoard.get(j-1).setY(yOffsetBlue);
+							blueBoard.get(j-1).setWidth((int)cardWidth);
+							blueBoard.get(j-1).setHeight((int)cardHeight);
+						}
+					}
+				case 1:
+					int yOffsetYellow = yellowCards.peek().getY();
+					for (int j = 1; j <= yellowBoard.size(); j++) {
+						int xOffset = (int)(yellowCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
+						if (!yellowBoard.get(j-1).isInAnimation()) {
+							yellowBoard.get(j-1).setX(xOffset);
+							yellowBoard.get(j-1).setY(yOffsetYellow);
+							yellowBoard.get(j-1).setWidth((int)cardWidth);
+							yellowBoard.get(j-1).setHeight((int)cardHeight);
+						}
+					}
+				case 2:
+					int yOffsetGreen = greenCards.peek().getY();
+					for (int j = 1; j <= greenBoard.size(); j++) {
+						int xOffset = (int)(greenCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) * j);
+						if (!greenBoard.get(j-1).isInAnimation()) {
+							greenBoard.get(j-1).setX(xOffset);
+							greenBoard.get(j-1).setY(yOffsetGreen);
+							greenBoard.get(j-1).setWidth((int)cardWidth);
+							greenBoard.get(j-1).setHeight((int)cardHeight);
+						}
+					}
+				default: break;
+			}
+		}
+
+		// Calculating coords for the tokens
+		for (int i = 0; i < tokenBank.size(); i++) {
+			for (int j = 0; j < tokenBank.get(new ArrayList(tokenBank.keySet()).get(i)); j++) {
+				Token t = (Token) new ArrayList(tokenBank.keySet()).get(i);
+
+				int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) + ((cardWidth) * i));
+				int yOffset = (int)(y + (cardSpacingY * 1.25));
+				t.setX(xOffset);
+				t.setY(yOffset);
+				t.setWidth((int)chipRadius);
+				t.setHeight((int)chipRadius);
+			}
+		}
+
+		// Calculating coords for the nobles
+		for (int i = 0; i < nobleBank.size(); i++) {
+			int xOffset = (int)(x + cardWidth * 8.5);
+			int yOffset = (int)((y + (cardSpacingY * 1.25)) + ((nobleWidth + nobleSpacing) * i));
+			nobleBank.get(i).setX(xOffset);
+			nobleBank.get(i).setY(yOffset);
+			nobleBank.get(i).setWidth((int)nobleWidth); nobleBank.get(i).setHeight((int)nobleWidth);
+		}
+
+		firstCalculation = false;
 	}
-	
+
 	public Noble takeNoble(Noble y) {
 		Noble out = y;
-		nobleBank.remove(y)
+		nobleBank.remove(y);
 		return(out);
 	}
 
 	public Token takeToken(Token t) {
-		if() {
-
+		Token out = t;
+		if (tokenBank.get(t) != 0) {
+			tokenBank.put(t, tokenBank.get(t) - 1);
 		}
+		gamePanel.repaint();
+		return out;
 	}
 
 	public Card takeCardXY(int x, int y) {
 		// This needs to be followed with a call to the class to redraw the cards
 		Card out;
 		switch (y) {
-		case 0:
-			out = greenBoard.remove(x);
-			break;
-		case 1:
-			out = yellowBoard.remove(x);
-			break;
-		case 2:
-			out = blueBoard.remove(x);
-			break;
-		default:
-			throw new RuntimeException(
-					"Input card y value is incorrect. Should be 0-2, but is " + y + "\nError in Game.drawCard");
+			case 0:
+				out = greenBoard.remove(x);
+				break;
+			case 1:
+				out = yellowBoard.remove(x);
+				break;
+			case 2:
+				out = blueBoard.remove(x);
+				break;
+			default:
+				throw new RuntimeException(
+						"Input card y value is incorrect. Should be 0-2, but is " + y + "\nError in Game.drawCard");
 		}
 		dealCards();
 		return out;
@@ -298,23 +301,23 @@ public class Game {
 		}
 		return c;
 	}
-	
+
 	public Card drawCard(int x, int y) {
 		// This needs to be followed with a call to the class to redraw the cards
 		Card out;
 		switch (y) {
-		case 0:
-			out = greenBoard.remove(x);
-			break;
-		case 1:
-			out = yellowBoard.remove(x);
-			break;
-		case 2:
-			out = blueBoard.remove(x);
-			break;
-		default:
-			throw new RuntimeException(
-					"Input card y value is incorrect. Should be 0-2, but is " + y + "\nError in Game.drawCard");
+			case 0:
+				out = greenBoard.remove(x);
+				break;
+			case 1:
+				out = yellowBoard.remove(x);
+				break;
+			case 2:
+				out = blueBoard.remove(x);
+				break;
+			default:
+				throw new RuntimeException(
+						"Input card y value is incorrect. Should be 0-2, but is " + y + "\nError in Game.drawCard");
 		}
 		dealCards();
 		return out;
@@ -346,15 +349,15 @@ public class Game {
 		for(Card c : greenBoard) {
 			c.draw(g);
 		}
-		
+
 		for(Card c : yellowBoard) {
 			c.draw(g);
 		}
-		
+
 		for(Card c : blueBoard) {
 			c.draw(g);
 		}
-		
+
 		blueCards.peek().draw(g);
 		yellowCards.peek().draw(g);
 		greenCards.peek().draw(g);
@@ -365,11 +368,12 @@ public class Game {
 		g.setColor(Color.BLACK);
 		for (Token t : tokenBank.keySet()) {
 			// System.out.println(tokenBank.get(t));
+			g.setColor(Color.WHITE);
 			g.drawString("" + tokenBank.get(t), t.getX(), t.getY());
 			t.draw(g);
 		}
 	}
-	
+
 	// If we need to display a message, like for an incorrect move or asking if you
 	// want to use a wild
 	public static void showToast(String message, String title, String buttonText, Runnable buttonClickCallback) {
@@ -408,6 +412,14 @@ public class Game {
 		toastDialog.setContentPane(contentPanel);
 		toastDialog.setVisible(true);
 	}
-	
-	
+
+
 }
+
+/*public Token takeToken(Token t) {
+	Token out = t;
+	if (tokenBank.get(t) != 0) {
+		tokenBank.put(t, tokenBank.get(t) - 1);
+	}
+	return out;
+}*/
