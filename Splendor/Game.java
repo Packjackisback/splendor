@@ -405,7 +405,7 @@ public class Game {
 		for (Token t : tokenBank.keySet()) {
 			// System.out.println(tokenBank.get(t));
 			g.drawString("" + tokenBank.get(t), t.getX(), t.getY());
-			t.draw(g);
+			t.draw(g, tokenBank.get(t));
 		}
 	}
 	
