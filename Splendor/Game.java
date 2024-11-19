@@ -22,7 +22,6 @@ public class Game {
 	private final ArrayList<Card> greenBoard;
 	private final ArrayList<Card> yellowBoard;
 	private final ArrayList<Card> blueBoard;
-	private Card testingCard;
 	private boolean firstCalculation;
 	private int x, y, width, height;
 	JPanel gamePanel;

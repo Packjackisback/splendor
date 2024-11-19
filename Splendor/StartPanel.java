@@ -75,10 +75,12 @@ public class StartPanel extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        alpha = 0.7f;
-        fading=true;
-        fadeTimer.start();
-        System.out.println("Mouse Down");
+        if(!fading) {
+            alpha = 0.7f;
+            fading = true;
+            fadeTimer.start();
+            System.out.println("Mouse Down");
+        }
     }
 
     @Override

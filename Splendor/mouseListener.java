@@ -21,16 +21,26 @@ public class MouseListener implements java.awt.event.MouseListener {
                 game.takeToken(token);
                 gameState.addToCurrentPlayer(token);
                 break;
-
             }
         }
 
         for (ArrayList<Card> arr: cards) {
             for (Card card : arr) {
                 if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-                    game.takeCard(card);
-                    card.flip();
-                    gameState.addToCurrentPlayer(card);
+                    if(gameState.getCurrentPlayerHand().canAfford(card)) {
+                        game.takeCard(card);
+                        card.flip();
+                        gameState.addToCurrentPlayer(card);
+                        gameState.nextTurn();
+                    }
+                    else {
+                        Runnable okay = new Runnable() {
+                            public void run() {
+                                System.out.println("Okay");
+                            }
+                        };
+                        game.showToast("Cannot afford card", "Error!", "Ok", okay);
+                    }
                     break;
                 }
             }
