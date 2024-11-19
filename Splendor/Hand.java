@@ -102,13 +102,13 @@ public class Hand {
 	    	tokens.put(t.getGem(), new ArrayList<Token>());
     	}
     	tokens.get(t.getGem()).add(t);
+        System.out.println("Token added");
     }
     
     public void addNoble(Noble n) {
         nobles.add(n);
     }
 
-    private int drawnTokens;
     public void drawTurn(Object o) {
         if(o.getClass().getSimpleName().equals("Noble")) {
             if(canAffordNoble((Noble)o)) {

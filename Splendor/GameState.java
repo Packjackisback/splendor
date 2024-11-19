@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 public class GameState {
+    private static int[] score;
     private Game game;
     private int frameWidth, frameHeight;
     private boolean lastTurns;
     private ArrayList<Hand> hands = new ArrayList<Hand>();
     private int currentPlayer;
-
+    public static int[] getScore() {
+        return score;
+    }
     public GameState(Game game) {
         this.game = game;
         frameWidth = game.getWidth();
@@ -50,7 +53,9 @@ public class GameState {
     public void endGameCheck() {
 
     }
-
+    public Hand getCurrentPlayerHand() {
+        return hands.get(currentPlayer);
+    }
     public void setLastTurns(boolean lastTurns) {
         this.lastTurns = lastTurns;
     }

@@ -17,6 +17,7 @@ public class EndPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(background, 0, 0, null);
-        //TODO add scores
+        //TODO implement showing what score is the highest
+        GameState.getScore();
     }
 }
