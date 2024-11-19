@@ -53,6 +53,7 @@ public class Hand {
         Iterator<Gem> iter = keys.iterator();
         while (iter.hasNext()) {
             Gem gem = iter.next();
+	    if(!cards.containsKey(gem)) {return false;}
             int amt = cards.get(gem).size() + tokens.get(gem).size();
 
             if (amt >= cost.get(gem)) {
