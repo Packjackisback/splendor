@@ -18,6 +18,7 @@ public class mouseListener implements MouseListener {
         for (Token token : tokenKeys) {
             if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
                 game.takeToken(token);
+                break;
             }
         }
 
@@ -25,6 +26,7 @@ public class mouseListener implements MouseListener {
             for (Card card : arr) {
                 if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
                     game.takeCard(card);
+                    break;
                 }
             }
         }
