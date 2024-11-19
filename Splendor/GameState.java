@@ -75,7 +75,7 @@ public class GameState {
             }
             for (Gem gem : tokens.keySet()) {
                 for (Token t : tokens.get(gem)) {
-                    t.draw(g);
+                    t.draw(g, tokens.get(gem).size());
                 }
             }
         }
