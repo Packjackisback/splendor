@@ -26,6 +26,7 @@ public class Hand {
         cards = new TreeMap<Gem, ArrayList<Card>>();
         nobles = new ArrayList<Noble>();
         reservedCards = new ArrayList<Card>();
+        playerName = "Player " + (num-1);
         //credits = new HashMap<Gem, Integer>();
     }
 
@@ -52,7 +53,7 @@ public class Hand {
         Iterator<Gem> iter = keys.iterator();
         while (iter.hasNext()) {
             Gem gem = iter.next();
-            if(!cards.containsKey(gem)) {return false;}
+	    if(!cards.containsKey(gem)) {return false;}
             int amt = cards.get(gem).size() + tokens.get(gem).size();
 
             if (amt >= cost.get(gem)) {
@@ -103,13 +104,13 @@ public class Hand {
 	    	tokens.put(t.getGem(), new ArrayList<Token>());
     	}
     	tokens.get(t.getGem()).add(t);
-        System.out.println("Token added");
     }
     
     public void addNoble(Noble n) {
         nobles.add(n);
     }
 
+    private int drawnTokens;
     public void drawTurn(Object o) {
         if(o.getClass().getSimpleName().equals("Noble")) {
             if(canAffordNoble((Noble)o)) {
@@ -175,6 +176,7 @@ public class Hand {
     		}
     		
     		int yOutlierOffset = 0;
+    		int xOutlierCount = 0;
 			for (Gem g : tokens.keySet()) {
 				Card correspondingCard = null;
 				
@@ -187,12 +189,20 @@ public class Hand {
 					t.setWidth((int) chipRadius);
 					t.setHeight((int) chipRadius);
 					if (correspondingCard == null) {
-						t.setX((int)(x + width + cardSpacingX));
+						t.setX((int)(x + width + cardSpacingX + (chipRadius + cardSpacingX) * (xOutlierCount/2)));
 						t.setY((int)(y + (yOutlierOffset * chipSpacing * 3)));
-						yOutlierOffset++;
 					} else {
 						t.setX((int)(correspondingCard.getX() + correspondingCard.getWidth() - chipRadius));
 						t.setY((int)(correspondingCard.getY() + correspondingCard.getHeight() - chipRadius));
+					}
+				}
+				
+				if (correspondingCard == null) {
+					xOutlierCount++;
+					switch (yOutlierOffset) {
+					case 0: yOutlierOffset = 1; break;
+					case 1: yOutlierOffset = 0; break;
+					default: break;
 					}
 				}
 			}
@@ -215,15 +225,34 @@ public class Hand {
     		int count = 0;
     		int yOffset = 0;
     		int maxAmtOfCards = 0;
+    		int highestYValue = 0;
     		for (Gem g : cards.keySet()) {
     			ArrayList<Card> c = cards.get(g);
-    			int xOffset = count % 2 == 0 ? 0 : 1;
+    			int xOffset = count % 2 == 0 ? 0 : (int)(cardSpacingX + cardWidth);
     			int cardsListYOffset = 0;
+    			
+    			if (tokens.containsKey(g)) {
+    				for (Token t : tokens.get(g)) {
+    					t.setWidth((int)chipRadius);
+    					t.setHeight((int)chipRadius);
+    					if (count % 2 == 0) {
+    						t.setX((int)(x - chipRadius));
+        					t.setY(y + yOffset);
+    					} else {
+    						t.setX((int)(x + cardSpacingX + cardWidth + cardWidth));
+    						t.setY(y + yOffset);
+    					}
+    				}
+    			}
+    			
     			for (Card card : c) {
     				card.setWidth((int) cardWidth);
     				card.setHeight((int) cardHeight);
-    				card.setX((int)(x + (cardSpacingX + cardWidth) * xOffset));
+    				card.setX((int)(x + xOffset));
     				card.setY((int)(y + yOffset + (cardSpacingY + cardHeight/13) * cardsListYOffset));
+    				if (card.getY() > highestYValue) {
+    					highestYValue = card.getY();
+    				}
 					cardsListYOffset++;
     			}
     			if (cardsListYOffset > maxAmtOfCards) {
@@ -234,6 +263,25 @@ public class Hand {
 					maxAmtOfCards = 0;
     			}
     			count++;
+    		}
+    		
+    		int i = 0;
+    		for (Gem g : tokens.keySet()) {
+    			if (!cards.containsKey(g)) {
+    				ArrayList<Token> t = tokens.get(g);
+    				for (Token token : t) {
+    					token.setWidth((int)chipRadius);
+    					token.setHeight((int)chipRadius);
+    					if (cards.keySet().size() == 1) {
+    						token.setX((int)((i % 2) * (chipRadius + chipRadius/7) + x));
+        					token.setY((int)(highestYValue + cardHeight + chipRadius/2 + ((chipRadius + chipRadius/2) * (i/2))));
+    					} else {
+    						token.setX((int)(i * (chipRadius + chipRadius/7) + x));
+        					token.setY((int)(highestYValue + cardHeight + chipRadius/2));
+    					}
+    				}
+    				i++;
+    			}
     		}
     	}
     }
