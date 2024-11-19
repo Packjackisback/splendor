@@ -1,15 +1,16 @@
 package Splendor;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.*;
-public class mouseListener implements MouseListener {
+public class MouseListener implements java.awt.event.MouseListener {
     public Game game;
+    public GameState gameState;
     private Set<Token> tokenKeys;
     private ArrayList<ArrayList<Card>> cards;
-    public mouseListener(Game game) {
+    public MouseListener(Game game, GameState gameState) {
         this.game = game;
         tokenKeys = game.getTokens().keySet();
         cards = game.getCardArray();
+        this.gameState = gameState;
     }
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -18,7 +19,9 @@ public class mouseListener implements MouseListener {
         for (Token token : tokenKeys) {
             if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
                 game.takeToken(token);
+                gameState.addToCurrentPlayer(token);
                 break;
+
             }
         }
 
@@ -26,6 +29,8 @@ public class mouseListener implements MouseListener {
             for (Card card : arr) {
                 if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
                     game.takeCard(card);
+                    card.flip();
+                    gameState.addToCurrentPlayer(card);
                     break;
                 }
             }
