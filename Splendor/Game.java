@@ -261,6 +261,8 @@ public class Game {
 	public Token takeToken(Token t) {
 		if(tokenBank.get(t)>0) {
 			tokenBank.put(t, tokenBank.get(t)-1);
+			gamePanel.revalidate();
+			gamePanel.repaint();
 			return(t);
 		}
 		return null;
@@ -301,26 +303,26 @@ public class Game {
 //		return c;
 //	}
 	public Card takeCard(Card c) {
-		//Drawing a card from the stack
-		if(greenCards.contains(c)) {
+		//Drawing a card from the stacks
+		if(greenBoard.contains(c)) {
 			System.out.println("green");
-			greenCards.remove(c);
+			greenBoard.remove(c);
 			dealCards();
 			gamePanel.revalidate();
 			gamePanel.repaint();
 			return c;
 		}
-		if(yellowCards.contains(c)) {
+		if(yellowBoard.contains(c)) {
 			System.out.println("yellow");
-			yellowCards.remove(c);
+			yellowBoard.remove(c);
 			dealCards();
 			gamePanel.revalidate();
 			gamePanel.repaint();
 			return c;
 		}
-		if(blueCards.contains(c)) {
+		if(blueBoard.contains(c)) {
 			System.out.println("blue");
-			blueCards.remove(c);
+			blueBoard.remove(c);
 			dealCards();
 			gamePanel.revalidate();
 			gamePanel.repaint();
@@ -354,16 +356,22 @@ public class Game {
 
 	public void dealCards() {
 		while(greenBoard.size()<4) {
-			greenCards.peek().flip();
-			greenBoard.add(greenCards.pop());
+			if(greenCards.size()>0) {
+				greenCards.peek().flip();
+				greenBoard.add(greenCards.pop());
+			}
 		}
 		while(yellowBoard.size()<4) {
-			yellowCards.peek().flip();
-			yellowBoard.add(yellowCards.pop());
+			if(yellowCards.size()>0) {
+				yellowCards.peek().flip();
+				yellowBoard.add(yellowCards.pop());
+			}
 		}
 		while(blueBoard.size()<4) {
-			blueCards.peek().flip();
-			blueBoard.add(blueCards.pop());
+			if(blueCards.size()>0) {
+				blueCards.peek().flip();
+				blueBoard.add(blueCards.pop());
+			}
 		}
 	}
 
