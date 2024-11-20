@@ -2,7 +2,7 @@ package Splendor;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class Token extends Piece implements Drawable{
+public class Token extends Piece {
 	private final Gem gem;
 	private final boolean isWild;
 
@@ -20,8 +20,9 @@ public class Token extends Piece implements Drawable{
 		return gem;
 	}
 	
-	@Override
-	public void draw(Graphics g) {
+	public void draw(Graphics g, int sizeOfStack) {
+		g.setColor(Color.WHITE);
+		g.drawString("" + sizeOfStack, getX(), getY());
 		g.drawImage(super.getImage(), getX(), getY(), getWidth(), getHeight(), null);
 	}
 }
