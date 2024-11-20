@@ -4,7 +4,7 @@ import java.util.*;
 public class MouseListener implements java.awt.event.MouseListener {
     public Game game;
     public GameState gameState;
-    private Set<Token> tokenKeys;
+    private Set<Gem> tokenKeys;
     private ArrayList<ArrayList<Card>> cards;
     public MouseListener(Game game, GameState gameState) {
         this.game = game;
@@ -16,12 +16,14 @@ public class MouseListener implements java.awt.event.MouseListener {
     public void mouseClicked(MouseEvent e) {
         int x = e.getX();
         int y = e.getY();
-        for (Token token : tokenKeys) {
-            if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
-                game.takeToken(token);
-                gameState.addToCurrentPlayer(token);
-                break;
-            }
+        for (Gem gem : tokenKeys) {
+        	for (Token token : game.getTokens().get(gem)) {
+        		if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
+                    game.takeToken(token);
+                    gameState.addToCurrentPlayer(token);
+                    break;
+                }
+        	}
         }
 
         for (ArrayList<Card> arr: cards) {

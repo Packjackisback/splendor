@@ -11,7 +11,7 @@ public class Gem implements Comparable<Gem> {
     
 	@Override
 	public int compareTo(Gem o) {
-		int orderNum = 0; // 0 = white, 1 = blue, 2 = green, 3 = red, 4 = black, 5 = gold
+		int orderNum = 0; // 0 = white, 1 = blue, 2 = green, 3 = red, 4 = black, 5 = wild
 		switch(gemType) {
 			case "White":
 				orderNum = 0;
@@ -28,7 +28,7 @@ public class Gem implements Comparable<Gem> {
 			case "Black":
 				orderNum = 4;
 				break;
-			case "Gold":
+			case "Wild":
 				orderNum = 5;
 				break;
 		}
@@ -50,7 +50,7 @@ public class Gem implements Comparable<Gem> {
 			case "Black":
 				otherNum = 4;
 				break;
-			case "Gold":
+			case "Wild":
 				otherNum = 5;
 				break;
 		}

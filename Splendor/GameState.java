@@ -61,7 +61,7 @@ public class GameState {
     }
     public void drawHands(Graphics g) {
         g.setColor(Color.WHITE);
-        g.drawString("Hand 0", hands.get(0).getX(), hands.get(0).getY());
+        g.drawString("Hand 0", hands.get(0).getX(), hands.get(0).getY()-(hands.get(0).getHeight()/13));
         g.drawString("Hand 1", hands.get(1).getX(), hands.get(1).getY());
         g.drawString("Hand 2", hands.get(2).getX(), hands.get(2).getY());
         g.drawString("Hand 3", hands.get(3).getX(), hands.get(3).getY());
@@ -75,7 +75,7 @@ public class GameState {
             }
             for (Gem gem : tokens.keySet()) {
                 for (Token t : tokens.get(gem)) {
-                    t.draw(g);
+                    t.draw(g, tokens.get(gem).size());
                 }
             }
         }
