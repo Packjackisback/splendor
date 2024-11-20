@@ -5,8 +5,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Set;
 import java.util.Stack;
+import java.util.TreeMap;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Game {
-	private final HashMap<Token, Integer> tokenBank;
+	private final TreeMap<Gem, ArrayList<Token>> tokenBank;
 	private Stack<Card> greenCards;
 	private Stack<Card> yellowCards;
 	private Stack<Card> blueCards;
@@ -37,16 +38,23 @@ public class Game {
 		blueBoard = new ArrayList<Card>();
 		yellowBoard = new ArrayList<Card>();
 
-		tokenBank = new HashMap<Token, Integer>();
+		tokenBank = new TreeMap<Gem, ArrayList<Token>>();
 		nobleBank = new ArrayList<Noble>();
 
-		tokenBank.put(new Token( new Gem("Wild")), 5);
-		tokenBank.put(new Token( new Gem("Red")), 7);
-		tokenBank.put(new Token( new Gem("Green")), 7);
-		tokenBank.put(new Token( new Gem("Blue")), 7);
-		tokenBank.put(new Token( new Gem("Black")), 7);
-		tokenBank.put(new Token( new Gem("White")), 7);
-
+		tokenBank.put(new Gem("Wild"), new ArrayList<Token>());
+		tokenBank.put(new Gem("Red"), new ArrayList<Token>());
+		tokenBank.put(new Gem("Green"), new ArrayList<Token>());
+		tokenBank.put(new Gem("Blue"), new ArrayList<Token>());
+		tokenBank.put(new Gem("Black"), new ArrayList<Token>());
+		tokenBank.put(new Gem("White"), new ArrayList<Token>());
+		
+		for (int i = 0; i < 5; i++) tokenBank.get(new Gem("Wild")).add(new Token(new Gem("Wild")));
+		for (int i = 0; i < 7; i++) tokenBank.get(new Gem("Red")).add(new Token(new Gem("Red")));
+		for (int i = 0; i < 7; i++) tokenBank.get(new Gem("Green")).add(new Token(new Gem("Green")));
+		for (int i = 0; i < 7; i++) tokenBank.get(new Gem("Blue")).add(new Token(new Gem("Blue")));
+		for (int i = 0; i < 7; i++) tokenBank.get(new Gem("Black")).add(new Token(new Gem("Black")));
+		for (int i = 0; i < 7; i++) tokenBank.get(new Gem("White")).add(new Token(new Gem("White")));
+		
 		Stack[] cardStacks = Generator.getCards(); //Generate cards and shuffle
 
 		blueCards = cardStacks[0];
@@ -83,7 +91,7 @@ public class Game {
 		cards.add(greenCards);
 		return cards;
 	}
-	public HashMap<Token, Integer> getTokens() { return tokenBank; }
+	public TreeMap<Gem, ArrayList<Token>> getTokens() { return tokenBank; }
 	public ArrayList<Noble> getNobles() { return nobleBank; }
 	public int getX() { return x; }
 	public int getY() { return y; }
@@ -227,8 +235,9 @@ public class Game {
         
         // Calculating coords for the tokens
         for (int i = 0; i < tokenBank.size(); i++) {
-        	for (int j = 0; j < tokenBank.get(new ArrayList(tokenBank.keySet()).get(i)); j++) {
-        		Token t = (Token) new ArrayList(tokenBank.keySet()).get(i);
+        	Set<Gem> keys = tokenBank.keySet();
+        	for (int j = 0; j < tokenBank.get(keys.toArray()[i]).size(); j++) {
+        		Token t = tokenBank.get(keys.toArray()[i]).get(j);
 
         		int xOffset = (int)(blueCards.peek().getX() + (cardWidth + cardSpacingX * 2.5) + ((cardWidth) * i));
         		int yOffset = (int)(y + (cardSpacingY * 1.25));
@@ -258,8 +267,8 @@ public class Game {
 	}
 
 	public Token takeToken(Token t) {
-		if(tokenBank.get(t)>0) {
-			tokenBank.put(t, tokenBank.get(t)-1);
+		if(tokenBank.containsKey(t.getGem()) && tokenBank.get(t.getGem()).size() > 0) {
+			tokenBank.get(t.getGem()).remove(tokenBank.get(t.getGem()).indexOf(t));
 			gamePanel.revalidate();
 			gamePanel.repaint();
 			return(t);
@@ -402,10 +411,11 @@ public class Game {
 	//DRAWING THE TEXT SCREEN
 	public void drawTokens(Graphics g) {
 		g.setColor(Color.BLACK);
-		for (Token t : tokenBank.keySet()) {
-			// System.out.println(tokenBank.get(t));
-			g.drawString("" + tokenBank.get(t), t.getX(), t.getY());
-			t.draw(g, tokenBank.get(t));
+		for (Gem gem : tokenBank.keySet()) {
+			for (Token t : tokenBank.get(gem)) {
+				g.drawString("" + tokenBank.get(gem).size(), t.getX(), t.getY());
+				t.draw(g, tokenBank.get(gem).size());
+			}
 		}
 	}
 	
