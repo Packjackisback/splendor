@@ -53,7 +53,7 @@ public class Hand {
         Iterator<Gem> iter = keys.iterator();
         while (iter.hasNext()) {
             Gem gem = iter.next();
-	    if(!cards.containsKey(gem)) {return false;}
+            if(!cards.containsKey(gem)) {return false;}
             int amt = cards.get(gem).size() + tokens.get(gem).size();
 
             if (amt >= cost.get(gem)) {
@@ -155,7 +155,7 @@ public class Hand {
     		
     		if (playerNum == 0) {
     			x = (int) (frameWidth/2 - width/2);
-    			y = (int) (frameHeight/2 + game.getHeight()/2);
+    			y = (int) (frameHeight/2 + game.getHeight()/2 + cardSpacingY * 3);
     		} else {
     			x = (int) (frameWidth/2 - width/2);
     			y = (int) (frameHeight/2 - game.getHeight()/2 - height - cardSpacingY * 3);
