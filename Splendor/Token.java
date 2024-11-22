@@ -1,6 +1,5 @@
 package Splendor;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 public class Token extends Piece {
 	private final Gem gem;
@@ -25,4 +24,7 @@ public class Token extends Piece {
 		g.drawString("" + sizeOfStack, getX(), getY());
 		g.drawImage(super.getImage(), getX(), getY(), getWidth(), getHeight(), null);
 	}
+
+
+
 }

@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
@@ -265,7 +266,16 @@ public class Game {
 		nobleBank.remove(y);
 		return(out);
 	}
-
+	public void addToken(Token t) {
+		if(tokenBank.containsKey(t.getGem())) {
+			ArrayList<Token> tokenList = tokenBank.get(t.getGem());
+			tokenList.add(t);
+			return;
+		}
+		ArrayList<Token> tokenList = new ArrayList<>();
+		tokenList.add(t);
+		tokenBank.put(t.getGem(), tokenList);
+	}
 	public Token takeToken(Token t) {
 		if(tokenBank.containsKey(t.getGem()) && tokenBank.get(t.getGem()).size() > 0) {
 			tokenBank.get(t.getGem()).remove(tokenBank.get(t.getGem()).indexOf(t));
@@ -457,6 +467,8 @@ public class Game {
 		toastDialog.setContentPane(contentPanel);
 		toastDialog.setVisible(true);
 	}
-	
+	public static void showDialog(JDialog dialog) {
+		dialog.setVisible(true);
+	}
 	
 }

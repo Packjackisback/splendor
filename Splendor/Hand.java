@@ -18,6 +18,7 @@ public class Hand {
     private int x, y, width, height;
     private String playerName;
 
+
     public Hand(int num, Game game) {
         this.game = game;
         playerNum = num;
@@ -53,8 +54,10 @@ public class Hand {
         Iterator<Gem> iter = keys.iterator();
         while (iter.hasNext()) {
             Gem gem = iter.next();
-            if(!cards.containsKey(gem)) {return false;}
-            int amt = cards.get(gem).size() + tokens.get(gem).size();
+            if(!cards.containsKey(gem) && !tokens.containsKey(gem)) {System.out.println("Doesn't contain " + gem.getGemType());return false;}
+            int amt = 0;
+			if(cards.containsKey(gem)) {amt += cards.get(gem).size();}
+			if(tokens.containsKey(gem)) {amt += tokens.get(gem).size();}
 
             if (amt >= cost.get(gem)) {
             	check = true;
@@ -110,24 +113,9 @@ public class Hand {
         nobles.add(n);
     }
 
-    private int drawnTokens;
-    public void drawTurn(Object o) {
-        if(o.getClass().getSimpleName().equals("Noble")) {
-            if(canAffordNoble((Noble)o)) {
-                game.takeNoble((Noble) o);
-                //TODO implement turn over
-            }
-        }
-        if(o.getClass().getSimpleName().equals("Card")) {
-            if(canAfford((Card) o)) {
-                game.takeCard((Card)o);
-                //TODO implement turn over
-            }
-        }
-        if(o.getClass().getSimpleName().equals("Token")) {
-             //passing to another method because it is gonna be complex
-        }
-    }
+    public void removeToken(Token t) {
+		tokens.get(t.getGem()).remove(t);
+	}
     
     public void calculateCoords(int frameWidth, int frameHeight) {
     	boolean isHorizontal = playerNum % 2 == 0; // Player nums are: 0, 1, 2, 3 | 1 and 3 are vertical on the sides
