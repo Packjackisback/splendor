@@ -122,22 +122,22 @@ public class Generator {
         BufferedImage img = null;
         switch(gem.getGemType()) {
             case "Wild":
-                img = Generator.loadImage("Splendor/assets/tokens/GoldToken.jpg");
+                img = Generator.loadImage("Splendor/assets/tokens/GoldToken.png");
                 break;
             case "Red":
-                img = Generator.loadImage("Splendor/assets/tokens/RedToken.jpg");
+                img = Generator.loadImage("Splendor/assets/tokens/RedToken.png");
                 break;
             case "Blue":
-                img = Generator.loadImage("Splendor/assets/tokens/BlueToken.jpg");
+                img = Generator.loadImage("Splendor/assets/tokens/BlueToken.png");
                 break;
             case "Green":
-                img = Generator.loadImage("Splendor/assets/tokens/GreenToken.jpg");
+                img = Generator.loadImage("Splendor/assets/tokens/GreenToken.png");
                 break;
             case "White":
-                img = Generator.loadImage("Splendor/assets/tokens/WhiteToken.jpg");
+                img = Generator.loadImage("Splendor/assets/tokens/WhiteToken.png");
                 break;
             case "Black":
-                img = Generator.loadImage("Splendor/assets/tokens/BrownToken.jpg");
+                img = Generator.loadImage("Splendor/assets/tokens/BrownToken.png");
                 break;
             default:
                 throw(new RuntimeException("Invalid token gem:" + gem.getGemType()));
