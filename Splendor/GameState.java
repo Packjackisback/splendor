@@ -26,6 +26,15 @@ public class GameState {
         frameHeight = game.getHeight();
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
+        
+        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
+        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
+        
+        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
+        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
+        
+        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
+        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
     }
 
     public void nextTurn() {
@@ -200,6 +209,11 @@ public class GameState {
                     t.draw(g, tokens.get(gem).size());
                 }
             }
+        }
+        for (Hand h : hands) {
+        	for (Noble n : h.getNobles()) {
+        		n.draw(g);
+        	}
         }
     }
 }

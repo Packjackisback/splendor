@@ -194,16 +194,39 @@ public class Hand {
 					}
 				}
 			}
+			
+			yOutlierOffset = 0;
+    		xOutlierCount = 0;
+			for (Noble n : nobles) {
+				n.setWidth((int)nobleWidth);
+				n.setHeight((int)nobleWidth);
+				
+				n.setX((int)(x - nobleWidth - nobleSpacing - (nobleWidth + nobleSpacing) * (xOutlierCount/2)));
+				n.setY((int)(y + (yOutlierOffset * nobleSpacing * 3.5)));
+				
+				xOutlierCount++;
+				switch (yOutlierOffset) {
+				case 0: yOutlierOffset = 1; break;
+				case 1: yOutlierOffset = 0; break;
+				default: break;
+				}
+			}
     	} else {
     		if (amtOfCardStacks == 1) {
-    			width = (int)(cardWidth + cardSpacingX);
-    		} else {
-    			width = (int)((cardWidth + cardSpacingX) * 2);
+    			width = (int)(cardWidth + cardSpacingX + (nobles.size()/2 * nobleWidth));
+    		} else if (amtOfCardStacks == 2) {
+    			width = (int)((cardWidth + cardSpacingX) * 2 + (nobles.size()/2 * nobleWidth));
     		}
     		height = (int)(Math.ceil((double)amtOfCardStacks / 2) * (cardHeight + cardSpacingY));
     		
+    		if (nobles.size() == 1) {
+    			height += (int)nobleWidth;
+    		} else if (nobles.size() > 1) {
+    			height += ((int)nobleWidth) * 2;
+    		}
+    		
     		if (playerNum == 1) {
-    			x = (int)(game.getX() - cardSpacingX - width);
+    			x = (int)(game.getX() - (cardSpacingX * 9) - width);
     			y = (int)(game.getY() + cardSpacingY * 4);
     		} else {
     			x = (int)(game.getX() + game.getWidth() + cardSpacingX);
@@ -253,6 +276,8 @@ public class Hand {
     			count++;
     		}
     		
+    		if (highestYValue == 0) { highestYValue = y; }
+    		
     		int i = 0;
     		for (Gem g : tokens.keySet()) {
     			if (!cards.containsKey(g)) {
@@ -269,6 +294,40 @@ public class Hand {
     					}
     				}
     				i++;
+    			}
+    		}
+    		
+    		int yOutlierOffset = 0;
+    		int xOutlierCount = 0;
+    		if (playerNum == 3) {
+    			for (Noble n : nobles) {
+    				n.setWidth((int)nobleWidth);
+    				n.setHeight((int)nobleWidth);
+    				
+    				n.setX((int)(x + width + (nobleWidth + nobleSpacing) * (xOutlierCount/2)));
+    				n.setY((int)(y + (yOutlierOffset * nobleSpacing * 3.5)));
+    				
+    				xOutlierCount++;
+    				switch (yOutlierOffset) {
+    				case 0: yOutlierOffset = 1; break;
+    				case 1: yOutlierOffset = 0; break;
+    				default: break;
+    				}
+    			}
+    		} else {
+    			for (Noble n : nobles) {
+    				n.setWidth((int)nobleWidth);
+    				n.setHeight((int)nobleWidth);
+    				
+    				n.setX((int)(x - nobleWidth - nobleSpacing - (nobleWidth + nobleSpacing) * (xOutlierCount/2)));
+    				n.setY((int)(y + (yOutlierOffset * nobleSpacing * 3.5)));
+    				
+    				xOutlierCount++;
+    				switch (yOutlierOffset) {
+    				case 0: yOutlierOffset = 1; break;
+    				case 1: yOutlierOffset = 0; break;
+    				default: break;
+    				}
     			}
     		}
     	}
