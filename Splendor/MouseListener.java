@@ -3,7 +3,7 @@ import java.awt.event.MouseEvent;
 import java.util.*;
 public class MouseListener implements java.awt.event.MouseListener {
     public Game game;
-    public GameState gameState;
+    private GameState gameState;
     private Set<Gem> tokenKeys;
     private ArrayList<ArrayList<Card>> cards;
     public MouseListener(Game game, GameState gameState) {
@@ -19,8 +19,8 @@ public class MouseListener implements java.awt.event.MouseListener {
         for (Gem gem : tokenKeys) {
         	for (Token token : game.getTokens().get(gem)) {
         		if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
-                    game.takeToken(token);
-                    gameState.addToCurrentPlayer(token);
+                    gameState.addTokenToCurrentPlayer(token, game.getTokens().get(gem).size()>2);
+                    cards = game.getCardArray();
                     break;
                 }
         	}
@@ -32,7 +32,8 @@ public class MouseListener implements java.awt.event.MouseListener {
                     if(gameState.getCurrentPlayerHand().canAfford(card)) {
                         game.takeCard(card);
                         card.flip();
-                        gameState.addToCurrentPlayer(card);
+                        gameState.addCardToCurrentPlayer(card);
+
                         gameState.nextTurn();
                     }
                     else {
@@ -41,7 +42,7 @@ public class MouseListener implements java.awt.event.MouseListener {
                                 System.out.println("Okay");
                             }
                         };
-                        game.showToast("Cannot afford card", "Error!", "Ok", okay);
+                        Game.showToast("Cannot afford card", "Error!", "Ok", okay);
                     }
                     break;
                 }
@@ -68,4 +69,5 @@ public class MouseListener implements java.awt.event.MouseListener {
     public void mouseExited(MouseEvent e) {
 
     }
+
 }

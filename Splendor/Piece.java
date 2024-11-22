@@ -59,4 +59,14 @@ public abstract class Piece {
 		animationValues.put("propXDist", propXDist);
 		animationValues.put("propYDist", propYDist);
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Piece) {
+			Piece p = (Piece) obj;
+			return p.type.equals(this.type);
+		}
+		return false;
+	}
+
 }
