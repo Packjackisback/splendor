@@ -12,11 +12,14 @@ public class GameState {
     private final int frameWidth;
     private final int frameHeight;
     private boolean lastTurns;
-    private ArrayList<Hand> hands = new ArrayList<Hand>();
+    private static ArrayList<Hand> hands = new ArrayList<Hand>();
     private int currentPlayer;
     private ArrayList<Token> drawnTokens = new ArrayList<Token>();
 
     public static int[] getScore() {
+        for (int i = 0; i < hands.size(); i++) {
+            score[i] = hands.get(i).getScore();
+        }
         return score;
     }
 
@@ -26,7 +29,7 @@ public class GameState {
         frameHeight = game.getHeight();
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
-        
+        score = new int[4];
         hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
         hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
         
