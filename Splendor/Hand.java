@@ -8,12 +8,11 @@ import java.util.TreeMap;
 
 public class Hand {
     //private final HashMap<Gem, Integer> credits;
-    private final TreeMap<Gem, ArrayList<Token>> tokens;
-    private final TreeMap<Gem, ArrayList<Card>> cards;
+    private TreeMap<Gem, ArrayList<Token>> tokens;
+    private TreeMap<Gem, ArrayList<Card>> cards;
     private int playerNum;
-    private final ArrayList<Noble> nobles;
-    private int score;
-    private final ArrayList<Card> reservedCards;
+    private ArrayList<Noble> nobles;
+    private ArrayList<Card> reservedCards;
     private Game game;
     private int x, y, width, height;
     private String playerName;
@@ -22,7 +21,6 @@ public class Hand {
     public Hand(int num, Game game) {
         this.game = game;
         playerNum = num;
-        score = 0;
         tokens = new TreeMap<Gem, ArrayList<Token>>();
         cards = new TreeMap<Gem, ArrayList<Card>>();
         nobles = new ArrayList<Noble>();
@@ -36,7 +34,19 @@ public class Hand {
     public TreeMap<Gem, ArrayList<Card>> getCards() { return cards; }
     public int getPlayerNum() { return playerNum; }
     public ArrayList<Noble> getNobles() { return nobles; }
-    public int getScore() { return score; }
+    public int getScore() { 
+      int score = 0;
+      for(Gem g : cards.keySet()) {
+        ArrayList<Card> cardset = cards.get(g);
+        for(Card c : cardset) {
+          score+=c.getWorth();
+        }
+      }
+      for(Noble n : nobles) {
+        score += n.getWorth();
+      }
+      return score;
+    }
     public ArrayList<Card> getReservedCards() { return reservedCards; }
     public int getX() { return x; }
     public int getY() { return y; }
