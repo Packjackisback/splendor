@@ -342,14 +342,4 @@ public class Hand {
     	}
     }
 
-	public void addScore() {
-		for (ArrayList<Card> cd: cards.values()) {
-			for (Card c : cd) {
-				score += c.getWorth();
-			}
-		}
-		for (Noble n : nobles) {
-			score += n.getWorth();
-		}
-	}
 }
