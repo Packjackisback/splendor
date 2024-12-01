@@ -8,9 +8,9 @@ public class SplendorRunner {
         GameFrame gameFrame = new GameFrame();
         //The following code is for testing/demonstrative purposes only and should be removed
         Game game = new Game();
-        GameState gameState = new GameState(game);
-        MouseListener mouseListener = new MouseListener(game, gameState);
         EndPanel testing2 = new EndPanel();
+        GameState gameState = new GameState(game, testing2, gameFrame);
+        MouseListener mouseListener = new MouseListener(game, gameState);
         GamePanel testing = new GamePanel(game, testing2, gameFrame, gameState);
         StartPanel testing3 = new StartPanel(gameFrame, testing);
         testing.addMouseListener(mouseListener);

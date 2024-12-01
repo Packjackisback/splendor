@@ -3,6 +3,7 @@ package Splendor;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -15,16 +16,21 @@ public class GameState {
     private static ArrayList<Hand> hands = new ArrayList<Hand>();
     private int currentPlayer;
     private ArrayList<Token> drawnTokens = new ArrayList<Token>();
+    private EndPanel endPanel;
+    private GameFrame gameFrame;
 
     public static int[] getScore() {
         for (int i = 0; i < hands.size(); i++) {
             score[i] = hands.get(i).getScore();
         }
+        System.out.println(Arrays.toString(score));
         return score;
     }
 
-    public GameState(Game game) {
+    public GameState(Game game, EndPanel endPanel, GameFrame gameFrame) {
         this.game = game;
+        this.endPanel = endPanel;
+        this.gameFrame = gameFrame;
         frameWidth = game.getWidth();
         frameHeight = game.getHeight();
         lastTurns = false;
@@ -218,5 +224,9 @@ public class GameState {
         		n.draw(g);
         	}
         }
+    }
+
+    public void invokeEnd() {
+        gameFrame.setPanel(endPanel, score);
     }
 }
