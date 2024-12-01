@@ -13,7 +13,14 @@ public class GameFrame extends JFrame {
         setSize(WIDTH, HEIGHT);
         setVisible(true);
     }
+
     public void setPanel(JPanel panel) {
+        getContentPane().removeAll();
+        getContentPane().add(panel);
+        pack();
+    }
+
+    public void setPanel(JPanel panel, int[] scores) {
         getContentPane().removeAll();
         getContentPane().add(panel);
         pack();

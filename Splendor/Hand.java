@@ -18,7 +18,6 @@ public class Hand {
     private int x, y, width, height;
     private String playerName;
 
-
     public Hand(int num, Game game) {
         this.game = game;
         playerNum = num;
@@ -333,4 +332,14 @@ public class Hand {
     	}
     }
 
+	public void addScore() {
+		for (ArrayList<Card> cd: cards.values()) {
+			for (Card c : cd) {
+				score += c.getWorth();
+			}
+		}
+		for (Noble n : nobles) {
+			score += n.getWorth();
+		}
+	}
 }
