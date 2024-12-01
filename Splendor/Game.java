@@ -470,5 +470,4 @@ public class Game {
 	public static void showDialog(JDialog dialog) {
 		dialog.setVisible(true);
 	}
-	
 }
