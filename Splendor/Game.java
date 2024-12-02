@@ -126,14 +126,14 @@ public class Game {
         double nobleWidth = frameWidth / 25.0;
         double nobleSpacing = nobleWidth * 0.3;
         
-        width = (int) (frameWidth * .45);
+        width = (int) ((cardWidth + cardSpacingX * 2.5) * 5 + nobleWidth);
         height = (int) (frameHeight * .5);
         
         x = (int)(xCenter - width/2);
         y = (int)(yCenter - height/2);
         
         // Calculating the coords for the draw cards
-        int drawCardsXOffset = (int)(x + (cardSpacingX * 4));
+        int drawCardsXOffset = (int)(x);
         for (Card c : blueCards) {
         	c.setWidth((int)cardWidth);
         	c.setHeight((int)cardHeight);
@@ -250,7 +250,7 @@ public class Game {
         
         // Calculating coords for the nobles
         for (int i = 0; i < nobleBank.size(); i++) {
-        	int xOffset = (int)(x + cardWidth * 8.5);
+        	int xOffset = (int)(x + (cardWidth + cardSpacingX * 2.5) * 5);
         	int yOffset = (int)((y + (cardSpacingY * 1.25)) + ((nobleWidth + nobleSpacing) * i));
         	nobleBank.get(i).setX(xOffset);
         	nobleBank.get(i).setY(yOffset);
