@@ -29,14 +29,14 @@ public class Card extends Piece implements Drawable {
 	public static BufferedImage getBack(int backLevel) {
 		switch(backLevel) {
 			case 1:
-				BufferedImage blue = Generator.loadImage("Splendor/assets/BlueCard.jpg");
-				return blue;
-			case 2: 
+				BufferedImage green = Generator.loadImage("Splendor/assets/GreenCard.jpg");
+				return green;
+			case 2:
 				BufferedImage yellow = Generator.loadImage("Splendor/assets/YellowCard.jpg");
 				return yellow;
 			case 3:
-				BufferedImage green = Generator.loadImage("Splendor/assets/GreenCard.jpg");
-				return green;
+				BufferedImage blue = Generator.loadImage("Splendor/assets/BlueCard.jpg");
+				return blue;
 			default:
 				throw new RuntimeException("BackLevel not found\nBackLevel: " + backLevel);
         }
@@ -46,6 +46,15 @@ public class Card extends Piece implements Drawable {
 	public Gem getGem() { return typeGem; }
 	public int getWorth() { return worth; }
 	public HashMap<Gem, Integer> getCost() { return cost; }
+	@Override
+	public boolean equals(Object o) {
+		if (((Card)o).getGem() != this.typeGem) return false;
+		if (((Card)o).getWorth() != this.worth) return false;
+		if (((Card)o).getCost() != this.cost) return false;
+		return true;
+	}
+
+
 
 	@Override
 	public void draw(Graphics g) {

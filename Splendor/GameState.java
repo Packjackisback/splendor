@@ -65,7 +65,7 @@ public class GameState {
     public void addTokenToCurrentPlayer(Token t, boolean overTwo) {
         if(t.getGem().getGemType().equals("Wild")) {
             if(drawnTokens.size()>0) {
-                Game.showToast("Cannot take a wild after picking a card", "Alert!", "Pick again", new Runnable() {
+                Game.showToast("Cannot take a wild after picking a token", "Alert!", "Pick again", new Runnable() {
                     @Override
                     public void run() {
                         System.out.println("Picking again");
