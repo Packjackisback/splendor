@@ -123,7 +123,7 @@ public class Game {
         double chipRadius = frameWidth / 45.0;
         double chipSpacing = chipRadius * 0.4;
         
-        double nobleWidth = frameWidth / 30.0;
+        double nobleWidth = frameWidth / 25.0;
         double nobleSpacing = nobleWidth * 0.3;
         
         width = (int) (frameWidth * .45);
