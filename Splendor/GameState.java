@@ -6,10 +6,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.HashMap;
 
 public class GameState {
     private static int[] score;
-    private final Game game;
+    private Game game;
     private final int frameWidth;
     private final int frameHeight;
     private boolean lastTurns;
@@ -36,21 +37,27 @@ public class GameState {
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
-        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
-        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
-        
-        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
-        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
-        
-        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", null));
-        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20002.jpg", null));
     }
 
     public void nextTurn() {
         this.currentPlayer = (this.currentPlayer + 1) % 4;
     }
 
-    public void addCardToCurrentPlayer(Card c) {
+    public void addCardToCurrentPlayer(Card c) {  //TODO remove tokens from current player as needed
+        HashMap<Gem, Integer> cost = c.getCost();
+        TreeMap<Gem, ArrayList<Card>> current = getCurrentPlayerHand().getCards();
+        for(Gem g : cost.keySet()) {
+          //First, we need to find the gem cost - the discount
+          int tokensToRemove = cost.get(g);
+          tokensToRemove -= current.containsKey(g) ? current.get(g).size() : 0;
+          if(tokensToRemove>getCurrentPlayerHand().getTokens().get(g).size()) throw new RuntimeException("Not enough tokens to remove somehow, check line 51ish");
+          while(tokensToRemove>0) {
+            
+            game.addToken(new Token(g));
+            getCurrentPlayerHand().removeToken(new Token(g));
+            tokensToRemove--;
+          }
+        }
         hands.get(currentPlayer).addCard(c);
     }
 
@@ -167,9 +174,6 @@ public class GameState {
         hands.get(currentPlayer).removeToken(t);
         game.addToken(t);
     }
-    public void makeMove(int x, int y) {
-
-    }
 
     public ArrayList<Hand> getPlayerHands() {
         return hands;
@@ -185,7 +189,7 @@ public class GameState {
     public void endGameCheck() {
         for(int i : score) {
             if(i>15) {
-                //TODO implement end of game
+              invokeEnd();
             }
         }
     }
@@ -201,7 +205,7 @@ public class GameState {
     public void drawHands(Graphics g) {
         g.setColor(Color.WHITE);
 
-        for (int i = 0; i < 4; i++) { //replaces a whole chunk of logic
+        for (int i = 0; i < 4; i++) { //replaces a whole chunk of logic. Basically, the first one sets the font to bold for the current player, the second draws the position.
             g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
             g.drawString("Hand " + i, hands.get(i).getX(), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
         }
