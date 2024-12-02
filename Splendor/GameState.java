@@ -207,7 +207,7 @@ public class GameState {
 
         for (int i = 0; i < 4; i++) { //replaces a whole chunk of logic. Basically, the first one sets the font to bold for the current player, the second draws the position.
             g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
-            g.drawString("Hand " + i, hands.get(i).getX(), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
+            g.drawString("Hand " + (i+1) + " Score: " + hands.get(i).getScore(), hands.get(i).getX(), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
         }
         for (int i = 0; i < 4; i++) {
             TreeMap<Gem, ArrayList<Card>> cards = hands.get(i).getCards();

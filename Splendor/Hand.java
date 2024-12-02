@@ -76,6 +76,7 @@ public class Hand {
           else {
             //Implement asking for cards
             int wildsNeeded=cost.get(gem)-amt;
+			if(!tokens.containsKey(new Gem("Wild"))) return false;
             if(tokens.get(new Gem("Wild")).size()>wildsNeeded) {
               final boolean[] useWild = {false};
               Runnable doYouWantAWild = new Runnable() {
