@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
@@ -58,11 +57,11 @@ public class Game {
 		
 		Stack[] cardStacks = Generator.getCards(); //Generate cards and shuffle
 
-		blueCards = cardStacks[0];
+		blueCards = cardStacks[2];
 		Collections.shuffle(blueCards);
 		yellowCards = cardStacks[1];
 		Collections.shuffle(yellowCards);
-		greenCards = cardStacks[2];
+		greenCards = cardStacks[0];
 		Collections.shuffle(greenCards);
 		
 		ArrayList<Noble> nobles = Generator.getNobles();
@@ -323,27 +322,36 @@ public class Game {
 	public Card takeCard(Card c) {
 		//Drawing a card from the stacks
 		if(greenBoard.contains(c)) {
-			System.out.println("green");
-			greenBoard.remove(c);
-			dealCards();
+			System.out.println("Removing card " + c + " from board");
+			for(Card card : greenBoard) {
+				System.out.println(card);
+			}
+			System.out.println("The current index of card " + c + " is " + greenBoard.indexOf(c));
+
+			greenBoard.remove(greenBoard.indexOf(c));
+			System.out.println("The new board is:");
+			for(Card card : greenBoard) {
+				System.out.println(card);
+			}
 			gamePanel.revalidate();
 			gamePanel.repaint();
+			dealCards();
 			return c;
 		}
 		if(yellowBoard.contains(c)) {
 			System.out.println("yellow");
 			yellowBoard.remove(c);
-			dealCards();
 			gamePanel.revalidate();
 			gamePanel.repaint();
+			dealCards();
 			return c;
 		}
 		if(blueBoard.contains(c)) {
 			System.out.println("blue");
 			blueBoard.remove(c);
-			dealCards();
 			gamePanel.revalidate();
 			gamePanel.repaint();
+			dealCards();
 			return c;
 		}
 
@@ -374,19 +382,19 @@ public class Game {
 
 	public void dealCards() {
 		while(greenBoard.size()<4) {
-			if(greenCards.size()>0) {
+			if(!greenCards.isEmpty()) {
 				greenCards.peek().flip();
 				greenBoard.add(greenCards.pop());
 			}
 		}
 		while(yellowBoard.size()<4) {
-			if(yellowCards.size()>0) {
+			if(!yellowCards.isEmpty()) {
 				yellowCards.peek().flip();
 				yellowBoard.add(yellowCards.pop());
 			}
 		}
 		while(blueBoard.size()<4) {
-			if(blueCards.size()>0) {
+			if(!blueCards.isEmpty()) {
 				blueCards.peek().flip();
 				blueBoard.add(blueCards.pop());
 			}
