@@ -33,7 +33,6 @@ public class MouseListener implements java.awt.event.MouseListener {
                         game.takeCard(card);
                         card.flip();
                         gameState.addCardToCurrentPlayer(card);
-
                         gameState.nextTurn();
                     }
                     else {
