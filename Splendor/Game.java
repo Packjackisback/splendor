@@ -127,7 +127,7 @@ public class Game {
         double nobleSpacing = nobleWidth * 0.3;
         
         width = (int) ((cardWidth + cardSpacingX * 2.5) * 5 + nobleWidth);
-        height = (int) (frameHeight * .5);
+        height = (int) (nobleWidth * 5 + nobleSpacing * 4);
         
         x = (int)(xCenter - width/2);
         y = (int)(yCenter - height/2);
