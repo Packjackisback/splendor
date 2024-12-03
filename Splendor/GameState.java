@@ -205,22 +205,11 @@ public class GameState {
     public void drawHands(Graphics g) {
         //g.setColor(Color.WHITE);
     	g.setColor(Color.YELLOW);
-    	    	
-    	g.setFont(new Font("default", currentPlayer == 0 ? Font.BOLD : 0, currentPlayer == 0 ? 20 : 16));
-        g.drawString("Hand: " + 0, hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 13 - 15);
-        
-    	g.setFont(new Font("default", currentPlayer == 1 ? Font.BOLD : 0, currentPlayer == 1 ? 20 : 16));
-        g.drawString("Hand: " + 1, 20, gameFrame.getHeight() / 2);
-        
-    	g.setFont(new Font("default", currentPlayer == 2 ? Font.BOLD : 0, currentPlayer == 2 ? 20 : 16));
-        g.drawString("Hand: " + 2, hands.get(2).getX(), 35);
-        
-    	g.setFont(new Font("default", currentPlayer == 3 ? Font.BOLD : 0, currentPlayer == 3 ? 20 : 16));
-        g.drawString("Hand: " + 3, gameFrame.getWidth() - 100, gameFrame.getHeight() / 2);
-        /*for (int i = 0; i < 4; i++) { //replaces a whole chunk of logic. Basically, the first one sets the font to bold for the current player, the second draws the position.
-            g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
-            g.drawString("Hand: " + i, hands.get(i).getX(), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
-        }*/
+      for(int i = 0; i<4; i++) {
+          g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
+          //don't touch this
+          g.drawString("Hand " + (i+1) + " Score: " + hands.get(i).getScore(), ((i==0||i==2) ? gameFrame.getWidth()/2 : hands.get(i).getX() - ((i==1||i==3) ? ((i==1) ? gameFrame.getWidth()/5 : -1 * gameFrame.getWidth()/5) : 0)), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
+    	}
         for (int i = 0; i < 4; i++) {
             TreeMap<Gem, ArrayList<Card>> cards = hands.get(i).getCards();
             TreeMap<Gem, ArrayList<Token>> tokens = hands.get(i).getTokens();

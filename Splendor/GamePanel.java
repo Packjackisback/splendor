@@ -44,7 +44,7 @@ public class GamePanel extends JPanel {
         gameState.getPlayerHands().get(3).calculateCoords(getWidth(), getHeight());
         g.drawImage(background, 0, 0, getWidth(), getHeight(), null);
         g.setColor(new Color(255, 255, 255, 127));
-        g.fillRect(getWidth()/4, getHeight()/4, getWidth()/2, getHeight()/2);
+        g.fillRect(2*getWidth()/7, getHeight()/4, 2*getWidth()/5, getHeight()/2);
         game.drawCards(g); // Starting x, y, card width, card height, padding
         game.drawNobles(g);
         game.drawTokens(g);
