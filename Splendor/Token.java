@@ -21,7 +21,9 @@ public class Token extends Piece {
 	
 	public void draw(Graphics g, int sizeOfStack) {
 		g.setColor(Color.WHITE);
-		g.drawString("" + sizeOfStack, getX(), getY());
+		if (sizeOfStack > 0) {
+			g.drawString("" + sizeOfStack, getX(), getY());
+		}
 		g.drawImage(super.getImage(), getX(), getY(), getWidth(), getHeight(), null);
 	}
 

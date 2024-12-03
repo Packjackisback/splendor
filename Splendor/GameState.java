@@ -37,6 +37,25 @@ public class GameState {
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
+        
+        hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(0).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
+        hands.get(0).addToken(new Token(new Gem("White")));
+        
+        hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(1).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
+        hands.get(1).addToken(new Token(new Gem("White")));
+        
+        hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(3).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
+        hands.get(3).addToken(new Token(new Gem("Black")));
+        
+        for (Hand h : hands) {
+        	h.addReservedForTesting(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 1), new Token(new Gem("Wild")));
+        }
     }
 
     public void nextTurn() {
@@ -206,7 +225,17 @@ public class GameState {
         //g.setColor(Color.WHITE);
     	g.setColor(Color.YELLOW);
     	    	
-    	g.drawString("Hand " + (i+1) + " Score: " + hands.get(i).getScore() , ((i==0||i==2) ? gameFrame.getWidth()/ 2 - 10 : hands.get(i).getX()) - (i==1 ? gameFrame.getWidth() / 5 - 25 : 0) + (i==3 ? gameFrame.getWidth() / 5 - 25:0), ((i==3||i==1) ? gameFrame.getHeight()/2 : hands.get(i).getY()) - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
+    	g.setFont(new Font("default", currentPlayer == 0 ? Font.BOLD : 0, currentPlayer == 0 ? 20 : 16));
+        g.drawString("Hand: " + 0, hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 13 - 15);
+        
+    	g.setFont(new Font("default", currentPlayer == 1 ? Font.BOLD : 0, currentPlayer == 1 ? 20 : 16));
+        g.drawString("Hand: " + 1, 20, gameFrame.getHeight() / 2);
+        
+    	g.setFont(new Font("default", currentPlayer == 2 ? Font.BOLD : 0, currentPlayer == 2 ? 20 : 16));
+        g.drawString("Hand: " + 2, hands.get(2).getX(), 35);
+        
+    	g.setFont(new Font("default", currentPlayer == 3 ? Font.BOLD : 0, currentPlayer == 3 ? 20 : 16));
+        g.drawString("Hand: " + 3, gameFrame.getWidth() - 100, gameFrame.getHeight() / 2);
         /*for (int i = 0; i < 4; i++) { //replaces a whole chunk of logic. Basically, the first one sets the font to bold for the current player, the second draws the position.
             g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
             g.drawString("Hand: " + i, hands.get(i).getX(), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
@@ -228,6 +257,14 @@ public class GameState {
         for (Hand h : hands) {
         	for (Noble n : h.getNobles()) {
         		n.draw(g);
+        	}
+        	
+        	for (Card c : h.getReservedCards()) {
+        		c.draw(g);
+        	}
+        	
+        	for (Token t : h.getReservedTokens()) {
+        		t.draw(g, 0);
         	}
         }
     }
