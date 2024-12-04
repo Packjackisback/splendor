@@ -17,7 +17,7 @@ public class SplendorRunner {
         testing3.addMouseListener(testing3);
 
 
-        gameFrame.setPanel(testing3);
+        gameFrame.setPanel(testing2);
 
 
     }
