@@ -13,6 +13,7 @@ public class Hand {
     private int playerNum;
     private ArrayList<Noble> nobles;
     private ArrayList<Card> reservedCards;
+    private ArrayList<Token> reservedTokens;
     private Game game;
     private int x, y, width, height;
     private String playerName;
@@ -24,6 +25,7 @@ public class Hand {
         cards = new TreeMap<Gem, ArrayList<Card>>();
         nobles = new ArrayList<Noble>();
         reservedCards = new ArrayList<Card>();
+        reservedTokens = new ArrayList<Token>();
         playerName = "Player " + (num-1);
         //credits = new HashMap<Gem, Integer>();
     }
@@ -47,6 +49,7 @@ public class Hand {
       return score;
     }
     public ArrayList<Card> getReservedCards() { return reservedCards; }
+    public ArrayList<Token> getReservedTokens() { return reservedTokens; }
     public int getX() { return x; }
     public int getY() { return y; }
     public int getWidth() { return width; }
@@ -88,7 +91,8 @@ public class Hand {
               if(useWild[0]) {
                 check = true;
                   for(int i = 0; i<wildsNeeded; i++) {
-                    tokens.get(new Gem("Wild")).remove(0);
+                	  reservedTokens.add(tokens.get(new Gem("Wild")).get(0));
+                	  tokens.get(new Gem("Wild")).remove(0);
                   }
               } 
               else 
@@ -129,223 +133,311 @@ public class Hand {
 
     public void removeToken(Token t) {
 		tokens.get(t.getGem()).remove(t);
+		
+		if(tokens.get(t.getGem()).size() == 0) {
+			tokens.remove(t.getGem());
+		}
 	}
     
-    public void calculateCoords(int frameWidth, int frameHeight) {
-    	boolean isHorizontal = playerNum % 2 == 0; // Player nums are: 0, 1, 2, 3 | 1 and 3 are vertical on the sides
-    	double cardWidth = frameWidth / 23.5;
-        double cardHeight = frameHeight / 9.0;
-        double cardSpacingX = cardWidth * 0.2; // 20%
-        double cardSpacingY = cardHeight * 0.2;
-        
-        double chipRadius = frameWidth / 45.0;
-        double chipSpacing = chipRadius * 0.4;
-        
-        double nobleWidth = frameWidth / 25.0;
-        double nobleSpacing = nobleWidth * 0.3;
-    	
-        int amtOfCardStacks = 0;
-        for (Gem g : cards.keySet()) {
-        	if (cards.get(g).size() > 0) {
-        		amtOfCardStacks++;
-        	}
-        }
-        
-    	if (isHorizontal) {
-    		width = (int) ((cardWidth * amtOfCardStacks) + (cardSpacingX * (amtOfCardStacks - 1)));
-    		height = (int) (cardHeight + cardSpacingY);
-    		
-    		if (playerNum == 0) {
-    			x = (int) (frameWidth/2 - width/2);
-    			y = (int) (frameHeight/2 + game.getHeight()/2 + cardSpacingY * 3);
-    		} else {
-    			x = (int) (frameWidth/2 - width/2);
-    			y = (int) (frameHeight/2 - game.getHeight()/2 - height - cardSpacingY * 3);
-    		}
-    		
-    		int count = 0;
-    		for (Gem g : cards.keySet()) {
-    			ArrayList<Card> c = cards.get(g);
-    			int yOffsetCount = 0;
-    			for (Card card : c) {
-    				card.setWidth((int) cardWidth);
-    				card.setHeight((int) cardHeight);
-    				card.setX((int)(x + (cardSpacingX + cardWidth) * count));
-    				card.setY((int)(y + (cardSpacingY + cardHeight/13) * yOffsetCount));
+	public void calculateCoords(int frameWidth, int frameHeight) {
+		boolean isHorizontal = playerNum % 2 == 0; // Player nums are: 0, 1, 2, 3 | 1 and 3 are vertical on the sides
+		double cardWidth = frameWidth / 23.5;
+		double cardHeight = frameHeight / 9.0;
+		double cardSpacingX = cardWidth * 0.2; // 20%
+		double cardSpacingY = cardHeight * 0.2;
+
+		double chipRadius = frameWidth / 45.0;
+		double chipSpacing = chipRadius * 0.4;
+
+		double nobleWidth = frameWidth / 25.0;
+		double nobleSpacing = nobleWidth * 0.3;
+
+		int amtOfCardStacks = 0;
+		for (Gem g : cards.keySet()) {
+			if (cards.get(g).size() > 0) {
+				amtOfCardStacks++;
+			}
+		}
+
+		if (isHorizontal) {
+			width = (int) ((cardWidth * amtOfCardStacks) + (cardSpacingX * (amtOfCardStacks - 1)));
+			height = (int) (cardHeight + cardSpacingY);
+
+			if (playerNum == 0) { // At the bottom of the screen
+				x = (int) (frameWidth / 2 - width / 2);
+				y = (int) (frameHeight / 2 + game.getHeight() / 2 + cardSpacingY * 2);
+			} else { // At the top of the screen
+				x = (int) (frameWidth / 2 - width / 2);
+				y = (int) (frameHeight / 2 - game.getHeight() / 2 - height - cardSpacingY * 3);
+			}
+
+			// Calculating the cards coordinates
+			int count = 0;
+			for (Gem g : cards.keySet()) {
+				ArrayList<Card> c = cards.get(g);
+				int yOffsetCount = 0;
+				for (Card card : c) {
+					card.setWidth((int) cardWidth);
+					card.setHeight((int) cardHeight);
+					card.setX((int) (x + (cardSpacingX + cardWidth) * count));
+					card.setY((int) (y + (cardSpacingY + cardHeight / 13) * yOffsetCount));
 					yOffsetCount++;
-    			}
+				}
 				count++;
-    		}
-    		
-    		int yOutlierOffset = 0;
-    		int xOutlierCount = 0;
+			}
+
+			int yOutlierOffset = 0;
+			int xOutlierCountTokens = 0;
+
+			// Calculating the token coordinates
 			for (Gem g : tokens.keySet()) {
 				Card correspondingCard = null;
-				
 				if (cards.get(g) != null) {
 					ArrayList<Card> c = cards.get(g);
-					correspondingCard = c.get(c.size()-1);
+					correspondingCard = c.get(c.size() - 1);
 				}
-				
+
 				for (Token t : tokens.get(g)) {
 					t.setWidth((int) chipRadius);
 					t.setHeight((int) chipRadius);
 					if (correspondingCard == null) {
-						t.setX((int)(x + width + cardSpacingX + (chipRadius + cardSpacingX) * (xOutlierCount/2)));
-						t.setY((int)(y + (yOutlierOffset * chipSpacing * 3)));
+						t.setX((int) (x + width + cardSpacingX + (chipRadius + cardSpacingX) * (xOutlierCountTokens / 2)));
+						t.setY((int) (y + (yOutlierOffset * chipSpacing * 3)));
 					} else {
-						t.setX((int)(correspondingCard.getX() + correspondingCard.getWidth() - chipRadius));
-						t.setY((int)(correspondingCard.getY() + correspondingCard.getHeight() - chipRadius));
+						t.setX((int) (correspondingCard.getX() + correspondingCard.getWidth() - chipRadius));
+						t.setY((int) (correspondingCard.getY() + correspondingCard.getHeight() - chipRadius));
 					}
 				}
-				
+
 				if (correspondingCard == null) {
-					xOutlierCount++;
+					xOutlierCountTokens++;
 					switch (yOutlierOffset) {
-					case 0: yOutlierOffset = 1; break;
-					case 1: yOutlierOffset = 0; break;
-					default: break;
+					case 0:
+						yOutlierOffset = 1;
+						break;
+					case 1:
+						yOutlierOffset = 0;
+						break;
+					default:
+						break;
 					}
 				}
 			}
 			
-			yOutlierOffset = 0;
-    		xOutlierCount = 0;
+			yOutlierOffset = 0; // YEAT IS DOOKIE
+			int xOutlierCount = 0;
 			for (Noble n : nobles) {
-				n.setWidth((int)nobleWidth);
-				n.setHeight((int)nobleWidth);
-				
-				n.setX((int)(x - nobleWidth - nobleSpacing - (nobleWidth + nobleSpacing) * (xOutlierCount/2)));
-				n.setY((int)(y + (yOutlierOffset * nobleSpacing * 3.5)));
-				
+				n.setWidth((int) nobleWidth);
+				n.setHeight((int) nobleWidth);
+
+				n.setX((int) (x - nobleWidth - nobleSpacing - (nobleWidth + nobleSpacing) * xOutlierCount));
+				n.setY(y);
+
 				xOutlierCount++;
-				switch (yOutlierOffset) {
-				case 0: yOutlierOffset = 1; break;
-				case 1: yOutlierOffset = 0; break;
-				default: break;
+			}
+			
+			// Calculating the reserved cards and tokens
+			int reservedCardsOffset = 0;
+			for (Card c : reservedCards) {
+				int xOffset = (int) (x + width + cardSpacingX
+						+ (chipRadius + chipSpacing) * (xOutlierCountTokens / 2 + reservedCardsOffset));
+				
+				if (xOutlierCountTokens % 2 != 0) {
+					xOffset += (int) (chipRadius + chipSpacing);
+				}
+				
+				c.setWidth((int) cardWidth);
+				c.setHeight((int) cardHeight);
+				c.setX(xOffset);
+				c.setY(y);
+
+				Token t = reservedTokens.get(reservedCardsOffset);
+				t.setWidth((int) chipRadius);
+				t.setHeight((int) chipRadius);
+				t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
+				t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
+
+				reservedCardsOffset++;
+			}
+		} else { // Is vertically positioned
+			if (amtOfCardStacks == 1) {
+				width = (int) (cardWidth + cardSpacingX);
+			} else if (amtOfCardStacks == 2) {
+				width = (int) (cardWidth * 2 + cardSpacingX);
+			}
+			height = (int) (Math.ceil((double) amtOfCardStacks / 2) * (cardHeight + cardSpacingY));
+
+			if (playerNum == 1) { // On the left side of the screen
+				x = (int) (game.getX() - (cardSpacingX * 25));
+				y = (int) (game.getY() + cardSpacingY * 4);
+			} else { // On the right side
+				x = (int) (game.getX() + game.getWidth() + (cardSpacingX * 15));
+				y = (int) (game.getY() + cardSpacingY * 4);
+			}
+
+			boolean needsOffsetForNobles = false; // Used to add to the x value of nobles if there is a token on the right
+
+			int count = 0;
+			int yOffset = 0;
+			int maxAmtOfCards = 0;
+			int highestYValue = 0;
+			for (Gem g : cards.keySet()) { // Calculating cards
+				ArrayList<Card> c = cards.get(g);
+				int xOffset = count % 2 == 0 ? 0 : (int) (cardSpacingX + cardWidth);
+				int cardsListYOffset = 0;
+
+				if (tokens.containsKey(g)) {
+					for (Token t : tokens.get(g)) {
+						t.setWidth((int) chipRadius);
+						t.setHeight((int) chipRadius);
+						if (count % 2 == 0) {
+							t.setX((int) (x - chipRadius));
+							t.setY(y + yOffset);
+						} else {
+							t.setX((int) (x + cardSpacingX + cardWidth + cardWidth));
+							t.setY(y + yOffset);
+						}
+					}
+
+					if (count == 1 && playerNum == 3) {
+						needsOffsetForNobles = true;
+					} else if (count == 0 && playerNum == 1) {
+						needsOffsetForNobles = true;
+					}
+				}
+
+				for (Card card : c) {
+					card.setWidth((int) cardWidth);
+					card.setHeight((int) cardHeight);
+					card.setX((int) (x + xOffset));
+					card.setY((int) (y + yOffset + (cardSpacingY + cardHeight / 13) * cardsListYOffset));
+					if (card.getY() > highestYValue) {
+						highestYValue = card.getY();
+					}
+					cardsListYOffset++;
+				}
+				if (cardsListYOffset > maxAmtOfCards) {
+					maxAmtOfCards = cardsListYOffset;
+				}
+				if (count % 2 == 1) {
+					yOffset += (int) (cardHeight + cardSpacingY + (maxAmtOfCards - 1) * (cardSpacingY + cardHeight / 13));
+					maxAmtOfCards = 0;
+				}
+				count++;
+			}
+
+			if (highestYValue != 0) {
+				height = (int) (highestYValue - y + cardHeight);
+			}
+
+			int i = 0;
+			int highestTokenY = Integer.MIN_VALUE; // Used for calculating reserved cards
+			for (Gem g : tokens.keySet()) { // CALCULATING TOKENS
+				if (!cards.containsKey(g)) {
+					ArrayList<Token> t = tokens.get(g);
+					for (Token token : t) {
+						token.setWidth((int) chipRadius);
+						token.setHeight((int) chipRadius);
+						if (cards.keySet().size() == 1) {
+							token.setX((int) ((i % 2) * (chipRadius + chipRadius / 7) + x));
+							token.setY((int) (y + height + chipRadius / 2 + ((chipRadius + chipRadius / 2) * (i / 2))));
+						} else { 
+							token.setX((int) ((i % 3) * (chipRadius + chipRadius / 7) + x));
+							token.setY((int) (y + height + chipRadius / 2 + ((chipRadius + chipRadius / 2) * (i / 3))));
+						}
+						
+						if (token.getY() > highestTokenY) {
+							highestTokenY = token.getY();
+						}
+					}
+					i++;
 				}
 			}
-    	} else {
-    		if (amtOfCardStacks == 1) {
-    			width = (int)(cardWidth + cardSpacingX + (nobles.size()/2 * nobleWidth));
-    		} else if (amtOfCardStacks == 2) {
-    			width = (int)((cardWidth + cardSpacingX) * 2 + (nobles.size()/2 * nobleWidth));
-    		}
-    		height = (int)(Math.ceil((double)amtOfCardStacks / 2) * (cardHeight + cardSpacingY));
-    		
-    		if (nobles.size() == 1) {
-    			height += (int)nobleWidth;
-    		} else if (nobles.size() > 1) {
-    			height += ((int)nobleWidth) * 2;
-    		}
-    		
-    		if (playerNum == 1) {
-    			x = (int)(game.getX() - (cardSpacingX * 9) - width);
-    			y = (int)(game.getY() + cardSpacingY * 4);
-    		} else {
-    			x = (int)(game.getX() + game.getWidth() + cardSpacingX);
-    			y = (int)(game.getY() + cardSpacingY * 4);
-    		}
-    		
-    		int count = 0;
-    		int yOffset = 0;
-    		int maxAmtOfCards = 0;
-    		int highestYValue = 0;
-    		for (Gem g : cards.keySet()) {
-    			ArrayList<Card> c = cards.get(g);
-    			int xOffset = count % 2 == 0 ? 0 : (int)(cardSpacingX + cardWidth);
-    			int cardsListYOffset = 0;
-    			
-    			if (tokens.containsKey(g)) {
-    				for (Token t : tokens.get(g)) {
-    					t.setWidth((int)chipRadius);
-    					t.setHeight((int)chipRadius);
-    					if (count % 2 == 0) {
-    						t.setX((int)(x - chipRadius));
-        					t.setY(y + yOffset);
-    					} else {
-    						t.setX((int)(x + cardSpacingX + cardWidth + cardWidth));
-    						t.setY(y + yOffset);
-    					}
-    				}
-    			}
-    			
-    			for (Card card : c) {
-    				card.setWidth((int) cardWidth);
-    				card.setHeight((int) cardHeight);
-    				card.setX((int)(x + xOffset));
-    				card.setY((int)(y + yOffset + (cardSpacingY + cardHeight/13) * cardsListYOffset));
-    				if (card.getY() > highestYValue) {
-    					highestYValue = card.getY();
-    				}
-					cardsListYOffset++;
-    			}
-    			if (cardsListYOffset > maxAmtOfCards) {
-	    			maxAmtOfCards = cardsListYOffset;
-    			}
-    			if (count % 2 == 1) {
-					yOffset += (int)(cardHeight + cardSpacingY + (maxAmtOfCards-1) * (cardSpacingY + cardHeight / 13));
-					maxAmtOfCards = 0;
-    			}
-    			count++;
-    		}
-    		
-    		if (highestYValue == 0) { highestYValue = y; }
-    		
-    		int i = 0;
-    		for (Gem g : tokens.keySet()) {
-    			if (!cards.containsKey(g)) {
-    				ArrayList<Token> t = tokens.get(g);
-    				for (Token token : t) {
-    					token.setWidth((int)chipRadius);
-    					token.setHeight((int)chipRadius);
-    					if (cards.keySet().size() == 1) {
-    						token.setX((int)((i % 2) * (chipRadius + chipRadius/7) + x));
-        					token.setY((int)(highestYValue + cardHeight + chipRadius/2 + ((chipRadius + chipRadius/2) * (i/2))));
-    					} else {
-    						token.setX((int)(i * (chipRadius + chipRadius/7) + x));
-        					token.setY((int)(highestYValue + cardHeight + chipRadius/2));
-    					}
-    				}
-    				i++;
-    			}
-    		}
-    		
-    		int yOutlierOffset = 0;
-    		int xOutlierCount = 0;
-    		if (playerNum == 3) {
-    			for (Noble n : nobles) {
-    				n.setWidth((int)nobleWidth);
-    				n.setHeight((int)nobleWidth);
-    				
-    				n.setX((int)(x + width + (nobleWidth + nobleSpacing) * (xOutlierCount/2)));
-    				n.setY((int)(y + (yOutlierOffset * nobleSpacing * 3.5)));
-    				
-    				xOutlierCount++;
-    				switch (yOutlierOffset) {
-    				case 0: yOutlierOffset = 1; break;
-    				case 1: yOutlierOffset = 0; break;
-    				default: break;
-    				}
-    			}
-    		} else {
-    			for (Noble n : nobles) {
-    				n.setWidth((int)nobleWidth);
-    				n.setHeight((int)nobleWidth);
-    				
-    				n.setX((int)(x - nobleWidth - nobleSpacing - (nobleWidth + nobleSpacing) * (xOutlierCount/2)));
-    				n.setY((int)(y + (yOutlierOffset * nobleSpacing * 3.5)));
-    				
-    				xOutlierCount++;
-    				switch (yOutlierOffset) {
-    				case 0: yOutlierOffset = 1; break;
-    				case 1: yOutlierOffset = 0; break;
-    				default: break;
-    				}
-    			}
-    		}
-    	}
-    }
 
+			// Calculating coords for nobles
+			int yOutlierOffset = 0;
+			int xOutlierCount = 0;
+			if (playerNum == 3) { // On the right side
+				for (Noble n : nobles) {
+					n.setWidth((int) nobleWidth);
+					n.setHeight((int) nobleWidth);
+
+					int nobleX = (int) (x + width + cardSpacingX);
+					if (needsOffsetForNobles) {
+						nobleX += (int) (chipRadius);
+					}
+
+					n.setX((int) (nobleX));
+					n.setY((int) (y + (yOutlierOffset * nobleSpacing * 3.5)));
+
+					xOutlierCount++;
+					switch (yOutlierOffset) {
+					case 0:
+						yOutlierOffset = 1;
+						break;
+					case 1:
+						yOutlierOffset = 0;
+						break;
+					default:
+						break;
+					}
+				}
+			} else { // On the left side
+				for (Noble n : nobles) {
+					n.setWidth((int) nobleWidth);
+					n.setHeight((int) nobleWidth);
+
+					int nobleX = x - (int) (cardSpacingX + nobleWidth);
+					if (needsOffsetForNobles) {
+						nobleX -= (int) (chipRadius);
+					}
+
+					n.setX(nobleX);
+					n.setY((int) (y + (yOutlierOffset * nobleSpacing * 3.5)));
+
+					xOutlierCount++;
+					switch (yOutlierOffset) {
+					case 0:
+						yOutlierOffset = 1;
+						break;
+					case 1:
+						yOutlierOffset = 0;
+						break;
+					default:
+						break;
+					}
+				}
+			}
+			
+			
+			// Calculating coords for reserved cards
+			int reservedCardsOffset = 0;
+			for (Card c : reservedCards) {
+				int xOffset = (int) (x + (cardWidth + cardSpacingX) * (reservedCardsOffset % 2));
+				int yReserved = (int) (y + height + cardSpacingY + (cardHeight + cardSpacingY) * (reservedCardsOffset / 2));
+				if (highestTokenY > 0) {
+					yReserved = (int) (highestTokenY + chipRadius + chipSpacing/2 + (cardHeight + cardSpacingY) * (reservedCardsOffset / 2));
+				}
+				
+				c.setWidth((int) cardWidth);
+				c.setHeight((int) cardHeight);
+				c.setX(xOffset);
+				c.setY(yReserved);
+
+				Token t = reservedTokens.get(reservedCardsOffset);
+				t.setWidth((int) chipRadius);
+				t.setHeight((int) chipRadius);
+				t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
+				t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
+
+				reservedCardsOffset++;
+			}
+		}
+	}
+	
+	public void addReservedForTesting(Card c, Token t) {
+		reservedCards.add(c);
+		reservedTokens.add(t);
 	}
 
+}

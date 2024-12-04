@@ -37,6 +37,25 @@ public class GameState {
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
+        
+        hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(0).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
+        hands.get(0).addToken(new Token(new Gem("White")));
+        
+        hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(1).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
+        hands.get(1).addToken(new Token(new Gem("White")));
+        
+        hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(3).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
+        hands.get(3).addToken(new Token(new Gem("Black")));
+        
+        for (Hand h : hands) {
+        	h.addReservedForTesting(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 1), new Token(new Gem("Wild")));
+        }
     }
 
     public void nextTurn() {
@@ -227,6 +246,14 @@ public class GameState {
         for (Hand h : hands) {
         	for (Noble n : h.getNobles()) {
         		n.draw(g);
+        	}
+        	
+        	for (Card c : h.getReservedCards()) {
+        		c.draw(g);
+        	}
+        	
+        	for (Token t : h.getReservedTokens()) {
+        		t.draw(g, 0);
         	}
         }
     }
