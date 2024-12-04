@@ -49,6 +49,7 @@ public class Hand {
       return score;
     }
     public ArrayList<Card> getReservedCards() { return reservedCards; }
+    public ArrayList<Token> getReservedTokens() { return reservedTokens; }
     public int getX() { return x; }
     public int getY() { return y; }
     public int getWidth() { return width; }
@@ -239,8 +240,12 @@ public class Hand {
 			int reservedCardsOffset = 0;
 			for (Card c : reservedCards) {
 				int xOffset = (int) (x + width + cardSpacingX
-						+ (cardWidth + cardSpacingX) * (xOutlierCountTokens / 2 + reservedCardsOffset));
-
+						+ (chipRadius + chipSpacing) * (xOutlierCountTokens / 2 + reservedCardsOffset));
+				
+				if (xOutlierCountTokens % 2 != 0) {
+					xOffset += (int) (chipRadius + chipSpacing);
+				}
+				
 				c.setWidth((int) cardWidth);
 				c.setHeight((int) cardHeight);
 				c.setX(xOffset);
@@ -249,8 +254,8 @@ public class Hand {
 				Token t = reservedTokens.get(reservedCardsOffset);
 				t.setWidth((int) chipRadius);
 				t.setHeight((int) chipRadius);
-				t.setX((int) (c.getX() + c.getWidth() - chipRadius));
-				t.setY((int) (c.getY() + c.getHeight() - chipRadius));
+				t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
+				t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
 
 				reservedCardsOffset++;
 			}
@@ -336,10 +341,11 @@ public class Hand {
 						if (cards.keySet().size() == 1) {
 							token.setX((int) ((i % 2) * (chipRadius + chipRadius / 7) + x));
 							token.setY((int) (y + height + chipRadius / 2 + ((chipRadius + chipRadius / 2) * (i / 2))));
-						} else {
-							token.setX((int) (i * (chipRadius + chipRadius / 7) + x));
-							token.setY((int) (y + height + chipRadius / 2));
+						} else { 
+							token.setX((int) ((i % 3) * (chipRadius + chipRadius / 7) + x));
+							token.setY((int) (y + height + chipRadius / 2 + ((chipRadius + chipRadius / 2) * (i / 3))));
 						}
+						
 						if (token.getY() > highestTokenY) {
 							highestTokenY = token.getY();
 						}
@@ -356,12 +362,12 @@ public class Hand {
 					n.setWidth((int) nobleWidth);
 					n.setHeight((int) nobleWidth);
 
-					int nobleX = (int) (x + width + nobleSpacing);
+					int nobleX = (int) (x + width + cardSpacingX);
 					if (needsOffsetForNobles) {
-						nobleX += (int) (chipRadius + chipSpacing);
+						nobleX += (int) (chipRadius);
 					}
 
-					n.setX((int) (x + width + (nobleWidth + nobleSpacing) * (xOutlierCount / 2)));
+					n.setX((int) (nobleX));
 					n.setY((int) (y + (yOutlierOffset * nobleSpacing * 3.5)));
 
 					xOutlierCount++;
@@ -381,9 +387,9 @@ public class Hand {
 					n.setWidth((int) nobleWidth);
 					n.setHeight((int) nobleWidth);
 
-					int nobleX = x - (int) (nobleSpacing + nobleWidth);
+					int nobleX = x - (int) (cardSpacingX + nobleWidth);
 					if (needsOffsetForNobles) {
-						nobleX -= (int) (chipRadius + chipSpacing);
+						nobleX -= (int) (chipRadius);
 					}
 
 					n.setX(nobleX);
@@ -408,7 +414,11 @@ public class Hand {
 			int reservedCardsOffset = 0;
 			for (Card c : reservedCards) {
 				int xOffset = (int) (x + (cardWidth + cardSpacingX) * (reservedCardsOffset % 2));
-				int yReserved = (int) (y + height + (cardHeight + cardSpacingY) * (reservedCardsOffset / 2));
+				int yReserved = (int) (y + height + cardSpacingY + (cardHeight + cardSpacingY) * (reservedCardsOffset / 2));
+				if (highestTokenY > 0) {
+					yReserved = (int) (highestTokenY + chipRadius + chipSpacing/2 + (cardHeight + cardSpacingY) * (reservedCardsOffset / 2));
+				}
+				
 				c.setWidth((int) cardWidth);
 				c.setHeight((int) cardHeight);
 				c.setX(xOffset);
@@ -417,12 +427,17 @@ public class Hand {
 				Token t = reservedTokens.get(reservedCardsOffset);
 				t.setWidth((int) chipRadius);
 				t.setHeight((int) chipRadius);
-				t.setX((int) (c.getX() + c.getWidth() - chipRadius));
-				t.setY((int) (c.getY() + c.getHeight() - chipRadius));
+				t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
+				t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
 
 				reservedCardsOffset++;
 			}
 		}
+	}
+	
+	public void addReservedForTesting(Card c, Token t) {
+		reservedCards.add(c);
+		reservedTokens.add(t);
 	}
 
 }
