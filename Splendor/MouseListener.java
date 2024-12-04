@@ -29,11 +29,15 @@ public class MouseListener implements java.awt.event.MouseListener {
         for (ArrayList<Card> arr: cards) {
             for (Card card : arr) {
                 if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-                    if(gameState.getCurrentPlayerHand().canAfford(card)) {
+                    if(gameState.getCurrentPlayerHand().canAfford(card) != null) {
                         game.takeCard(card);
                         card.flip();
-                        gameState.addCardToCurrentPlayer(card);
+                        gameState.addCardToCurrentPlayer(card, gameState.getCurrentPlayerHand().canAfford(card));
                         gameState.nextTurn();
+                    } else if (gameState.getCurrentPlayerHand().reserveCheck()) {
+                    	game.takeCard(card);
+                    	gameState.getCurrentPlayerHand().addReservedCard(card);
+                    	gameState.nextTurn();
                     }
                     else {
                         Runnable okay = new Runnable() {
