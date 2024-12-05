@@ -97,6 +97,8 @@ public class Game {
 	public int getY() { return y; }
 	public int getWidth() { return width; }
 	public int getHeight() { return height; }
+	public JPanel getPanel() { return gamePanel; }
+	
 	//Animation methods
 	public boolean isInAnimation() {
 		boolean inAnimation = false;
@@ -250,11 +252,13 @@ public class Game {
         
         // Calculating coords for the nobles
         for (int i = 0; i < nobleBank.size(); i++) {
-        	int xOffset = (int)(x + (cardWidth + cardSpacingX * 2.5) * 5);
-        	int yOffset = (int)((y + (cardSpacingY * 1.25)) + ((nobleWidth + nobleSpacing) * i));
-        	nobleBank.get(i).setX(xOffset);
-        	nobleBank.get(i).setY(yOffset);
-        	nobleBank.get(i).setWidth((int)nobleWidth); nobleBank.get(i).setHeight((int)nobleWidth);
+        	if (nobleBank.get(i) != null) {
+        		int xOffset = (int)(x + (cardWidth + cardSpacingX * 2.5) * 5);
+            	int yOffset = (int)((y + (cardSpacingY * 1.25)) + ((nobleWidth + nobleSpacing) * i));
+            	nobleBank.get(i).setX(xOffset);
+            	nobleBank.get(i).setY(yOffset);
+            	nobleBank.get(i).setWidth((int)nobleWidth); nobleBank.get(i).setHeight((int)nobleWidth);
+        	}
         }
         
         firstCalculation = false;
@@ -262,7 +266,7 @@ public class Game {
 	
 	public Noble takeNoble(Noble y) {
 		Noble out = y;
-		nobleBank.remove(y);
+		nobleBank.set(nobleBank.indexOf(y), null);
 		return(out);
 	}
 	public void addToken(Token t) {
@@ -404,7 +408,9 @@ public class Game {
 	// Draw methods
 	public void drawNobles(Graphics g) {
 		for(Noble n : nobleBank) {
-			n.draw(g);
+			if (n != null) {
+				n.draw(g);
+			}
 		}
 	}
 

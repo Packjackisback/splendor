@@ -65,33 +65,37 @@ public class Hand {
 		boolean needsToUseWilds = false;
 		TreeMap<Gem, Integer> tokensAmts = new TreeMap<Gem, Integer>();
 		for (Gem g : tokens.keySet()) {
+			tokensAmts.put(g, 0);
+			int count = 1;
 			for (Token t : tokens.get(g)) {
-				if (!tokensAmts.containsKey(g)) {
-					tokensAmts.put(g, 1);
-				} else {
-					int amt = tokensAmts.get(g);
-					tokensAmts.put(g, amt++);
-				}
+				tokensAmts.put(g, count);
+				count++;
 			}
 		}
 		
 		for (Gem g : cost.keySet()) {
-			int handTokenAmt = tokensToRemove.containsKey(g) ? tokensToRemove.get(g) : 0;
-			
+			int handTokenAmt = tokensAmts.containsKey(g) ? tokensAmts.get(g) : 0;
 			if (cost.get(g) > handTokenAmt) {
 				needsToUseWilds = true;
 				
-				if (tokensAmts.containsKey(new Gem("Wild")) && tokensAmts.get(new Gem("Wild")) >= cost.get(g) - handTokenAmt) {
+				if (tokensAmts.containsKey(new Gem("Wild")) && tokensAmts.get(new Gem("Wild")) >= (cost.get(g) - handTokenAmt)) {
 					tokensToRemove.put(g, handTokenAmt);
+					tokensAmts.put(g, 0);
 					if (!tokensToRemove.containsKey(new Gem("Wild"))) {
 						tokensToRemove.put(new Gem("Wild"), cost.get(g)-handTokenAmt);
 					} else {
 						int amt = tokensToRemove.get(new Gem("Wild"));
 						tokensToRemove.put(new Gem("Wild"), (amt + (cost.get(g) - handTokenAmt)));
 					}
+					int wildTokenAmt = tokensAmts.get(new Gem("Wild"));
+					tokensAmts.put(new Gem("Wild"), wildTokenAmt-(cost.get(g)-handTokenAmt));
 				} else {
 					return null;
 				}
+			} else {
+				int amt = tokensAmts.get(g);
+				tokensAmts.put(g, amt-cost.get(g));
+				tokensToRemove.put(g, cost.get(g));
 			}
 		}
 		
@@ -123,7 +127,7 @@ public class Hand {
 					System.out.println("Reserving Card");
 				}
 			};
-			Game.showToast("Do you want to reserve the card?", "Reserve?", "Yes", doYouWantToReserve);
+			Game.showToast("Cannot afford card, reserve?", "Reserve?", "Yes", doYouWantToReserve);
 			
 			if (reserveCard[0]) {
 				return true;
@@ -472,9 +476,9 @@ public class Hand {
 	}
 	
 	public void addReservedCard(Card c) {
-		c.flip();
 		reservedCards.add(c);
 		reservedTokens.add(tokens.get(new Gem("Wild")).get(0));
+		tokens.get(new Gem("Wild")).remove(0);
 	}
 
 }
