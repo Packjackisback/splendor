@@ -37,35 +37,52 @@ public class GameState {
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
+        
+        for (int i = 0; i < 4; i++) {
+        	hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        	hands.get(0).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
+        }
     }
 
     public void nextTurn() {
+    	TreeMap<Gem, ArrayList<Card>> playerCards = hands.get(currentPlayer).getCards();
+    	for (Noble n : game.getNobles()) {
+    		boolean canAfford = true;
+    		HashMap<Gem, Integer> nobleCost = n.getCost();
+    		
+    		for (Gem g : nobleCost.keySet()) {
+    			if (!playerCards.containsKey(g) || nobleCost.get(g) > playerCards.get(g).size()) {
+    				canAfford = false;
+    			}
+    		}
+    		
+    		if (canAfford) {
+    			game.takeNoble(n);
+    			hands.get(currentPlayer).addNoble(n);
+    			break;
+    		}
+    	}
+    	
         this.currentPlayer = (this.currentPlayer + 1) % 4;
         drawnTokens = new ArrayList<Token>();
     }
 
     public void addCardToCurrentPlayer(Card c, HashMap<Gem, Integer> tokensToRemove) {  //TODO remove tokens from current player as needed
-        HashMap<Gem, Integer> cost = c.getCost();
         TreeMap<Gem, ArrayList<Card>> current = getCurrentPlayerHand().getCards();
-        for(Gem g : cost.keySet()) {
+        for(Gem g : tokensToRemove.keySet()) {
           //First, we need to find the gem cost - the discount
-          //int tokensToRemove = cost.get(g);
-          tokensToRemove -= current.containsKey(g) ? current.get(g).size() : 0;
+          int tokenToRemove = tokensToRemove.get(g);
+          tokenToRemove -= current.containsKey(g) ? current.get(g).size() : 0;
           
-          if(getCurrentPlayerHand().getTokens().containsKey(g) || tokensToRemove > getCurrentPlayerHand().getTokens().get(g).size()) {
-        	  if (getCurrentPlayerHand().getTokens().containsKey(new Gem("Wild")) &&
-        			  getCurrentPlayerHand().getTokens().get(new Gem("Wild")).size() < tokensToRemove - getCurrentPlayerHand().getTokens().get(g).size()) {
-        		  throw new RuntimeException("Not enough tokens to remove somehow, check line 51ish");
-        	  }
-          }
-
-          while(tokensToRemove>0) {
+          while(tokenToRemove>0) {
             game.addToken(new Token(g));
             getCurrentPlayerHand().removeToken(new Token(g));
-            tokensToRemove--;
+            tokenToRemove--;
           }
         }
         hands.get(currentPlayer).addCard(c);
+        
+        game.getPanel().repaint();
     }
 
 
