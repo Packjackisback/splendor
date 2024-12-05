@@ -37,41 +37,29 @@ public class GameState {
         lastTurns = false;
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
-        
-        /*hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
-        hands.get(0).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
-        hands.get(0).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
-        hands.get(0).addToken(new Token(new Gem("White")));
-        
-        hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
-        hands.get(1).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
-        hands.get(1).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
-        hands.get(1).addToken(new Token(new Gem("White")));
-        
-        hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
-        hands.get(3).addCard(new Card("Splendor/assets/Cards/010.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
-        hands.get(3).addNoble(new Noble("Splendor/assets/nobles/20001.jpg", new HashMap<Gem, Integer>()));
-        hands.get(3).addToken(new Token(new Gem("Black")));
-        
-        for (Hand h : hands) {
-        	h.addReservedForTesting(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 1), new Token(new Gem("Wild")));
-        }*/
     }
 
     public void nextTurn() {
         this.currentPlayer = (this.currentPlayer + 1) % 4;
+        drawnTokens = new ArrayList<Token>();
     }
 
-    public void addCardToCurrentPlayer(Card c) {  //TODO remove tokens from current player as needed
+    public void addCardToCurrentPlayer(Card c, HashMap<Gem, Integer> tokensToRemove) {  //TODO remove tokens from current player as needed
         HashMap<Gem, Integer> cost = c.getCost();
         TreeMap<Gem, ArrayList<Card>> current = getCurrentPlayerHand().getCards();
         for(Gem g : cost.keySet()) {
           //First, we need to find the gem cost - the discount
-          int tokensToRemove = cost.get(g);
+          //int tokensToRemove = cost.get(g);
           tokensToRemove -= current.containsKey(g) ? current.get(g).size() : 0;
-          if(tokensToRemove>getCurrentPlayerHand().getTokens().get(g).size()) throw new RuntimeException("Not enough tokens to remove somehow, check line 51ish");
+          
+          if(getCurrentPlayerHand().getTokens().containsKey(g) || tokensToRemove > getCurrentPlayerHand().getTokens().get(g).size()) {
+        	  if (getCurrentPlayerHand().getTokens().containsKey(new Gem("Wild")) &&
+        			  getCurrentPlayerHand().getTokens().get(new Gem("Wild")).size() < tokensToRemove - getCurrentPlayerHand().getTokens().get(g).size()) {
+        		  throw new RuntimeException("Not enough tokens to remove somehow, check line 51ish");
+        	  }
+          }
+
           while(tokensToRemove>0) {
-            
             game.addToken(new Token(g));
             getCurrentPlayerHand().removeToken(new Token(g));
             tokensToRemove--;
@@ -99,11 +87,12 @@ public class GameState {
             nextTurn();
             return;
         }
+        
         for(Token p : drawnTokens) {
             if(t.getGem().getGemType().equals(p.getGem().getGemType())) {
                 System.out.println("Already contains said token");
                 if (drawnTokens.size() > 1) {
-                    Game.showToast("Cannot take 2 tokens when you have already taken one", "Alert!", "Pick again", new Runnable() {
+                    Game.showToast("Cannot take 2 of the same tokens", "Alert!", "Pick again", new Runnable() {
                         @Override
                         public void run() {
                             System.out.println("Picking again");
@@ -112,7 +101,7 @@ public class GameState {
                     return;
                 }
                 if(!overTwo) {
-                    Game.showToast("Not enough tokens", "Alert!", "Pick again", new Runnable() {
+                    Game.showToast("Not enough tokens in the stack", "Alert!", "Pick again", new Runnable() {
                         @Override
                         public void run() {
                             System.out.println("Picking again");
@@ -124,7 +113,6 @@ public class GameState {
                 hands.get(currentPlayer).addToken(t);
                 checkCurrentPlayerTokenCount();
                 nextTurn();
-                drawnTokens = new ArrayList<Token>();
                 return;
             }
         }
@@ -133,9 +121,7 @@ public class GameState {
         drawnTokens.add(t);
         checkCurrentPlayerTokenCount();
         if (drawnTokens.size() >= 3) {
-
             nextTurn();
-            drawnTokens = new ArrayList<Token>();
         }
     }
 
@@ -146,6 +132,7 @@ public class GameState {
         System.out.println(totalSize);
         if(totalSize > 10) game.showDialog(displayTokenLimitDialog());
     }
+    
     private JDialog displayTokenLimitDialog() {
         System.out.println("too many tokens! Calling dialog");
         TreeMap<Gem, ArrayList<Token>> tokenMap = hands.get(currentPlayer).getTokens();
@@ -224,11 +211,22 @@ public class GameState {
     public void drawHands(Graphics g) {
         //g.setColor(Color.WHITE);
     	g.setColor(Color.YELLOW);
-      for(int i = 0; i<4; i++) {
-          g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
-          //don't touch this
-          g.drawString("Hand " + (i+1) + " Score: " + hands.get(i).getScore(), ((i==0||i==2) ? gameFrame.getWidth()/2 : hands.get(i).getX() - ((i==1||i==3) ? ((i==1) ? gameFrame.getWidth()/5 : -1 * gameFrame.getWidth()/5) : 0)), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
-    	}
+    	    	
+    	g.setFont(new Font("default", currentPlayer == 0 ? Font.BOLD : 0, currentPlayer == 0 ? 20 : 16));
+        g.drawString("Hand: " + 0, hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 13 - 15);
+        
+    	g.setFont(new Font("default", currentPlayer == 1 ? Font.BOLD : 0, currentPlayer == 1 ? 20 : 16));
+        g.drawString("Hand: " + 1, 20, gameFrame.getHeight() / 2);
+        
+    	g.setFont(new Font("default", currentPlayer == 2 ? Font.BOLD : 0, currentPlayer == 2 ? 20 : 16));
+        g.drawString("Hand: " + 2, hands.get(2).getX(), 35);
+        
+    	g.setFont(new Font("default", currentPlayer == 3 ? Font.BOLD : 0, currentPlayer == 3 ? 20 : 16));
+        g.drawString("Hand: " + 3, gameFrame.getWidth() - 100, gameFrame.getHeight() / 2);
+        /*for (int i = 0; i < 4; i++) { //replaces a whole chunk of logic. Basically, the first one sets the font to bold for the current player, the second draws the position.
+            g.setFont(new Font("default", currentPlayer == i ? Font.BOLD : 0, currentPlayer == i ? 20 : 16));
+            g.drawString("Hand: " + i, hands.get(i).getX(), hands.get(i).getY() - (i == 0 ? hands.get(i).getHeight() / 13 : 0));
+        }*/
         for (int i = 0; i < 4; i++) {
             TreeMap<Gem, ArrayList<Card>> cards = hands.get(i).getCards();
             TreeMap<Gem, ArrayList<Token>> tokens = hands.get(i).getTokens();

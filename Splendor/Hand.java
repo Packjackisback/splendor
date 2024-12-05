@@ -59,49 +59,80 @@ public class Hand {
         playerNum = newNum;
     }
 
-    public boolean canAfford(Card x) {
-        HashMap<Gem, Integer> cost = x.getCost();
-        boolean check = false;
-        Set<Gem> keys = cost.keySet();
-        Iterator<Gem> iter = keys.iterator();
-        while (iter.hasNext()) {
-          Gem gem = iter.next();
-          if(!cards.containsKey(gem) && !tokens.containsKey(gem)) {
-            System.out.println("Doesn't contain " + gem.getGemType());
-            return false;
-          }
-          int amt = 0;
-			    if(cards.containsKey(gem)) amt += cards.get(gem).size();
-			    if(tokens.containsKey(gem)) amt += tokens.get(gem).size();
-          if (amt >= cost.get(gem)) { //If we can straight up afford this, return true
-            check = true;
-          } 
-          else {
-            //Implement asking for cards
-            int wildsNeeded=cost.get(gem)-amt;
-            if(tokens.get(new Gem("Wild")).size()>wildsNeeded) {
-              final boolean[] useWild = {false};
-              Runnable doYouWantAWild = new Runnable() {
-                public void run() {
-                  useWild[0] = true;
-                  System.out.println("Using wild");
-                }
-              };
-              Game.showToast("Do you want to use your " + wildsNeeded + " wilds?", "Use your wild(s)?","Yes", doYouWantAWild);
-              if(useWild[0]) {
-                check = true;
-                  for(int i = 0; i<wildsNeeded; i++) {
-                	  reservedTokens.add(tokens.get(new Gem("Wild")).get(0));
-                	  tokens.get(new Gem("Wild")).remove(0);
-                  }
-              } 
-              else 
-                return false;
-            }
-          }
-        }
-        return check;
-    }
+	public HashMap<Gem, Integer> canAfford(Card x) {
+		HashMap<Gem, Integer> cost = x.getCost();
+		HashMap<Gem, Integer> tokensToRemove = new HashMap<Gem, Integer>();
+		boolean needsToUseWilds = false;
+		TreeMap<Gem, Integer> tokensAmts = new TreeMap<Gem, Integer>();
+		for (Gem g : tokens.keySet()) {
+			for (Token t : tokens.get(g)) {
+				if (!tokensAmts.containsKey(g)) {
+					tokensAmts.put(g, 1);
+				} else {
+					int amt = tokensAmts.get(g);
+					tokensAmts.put(g, amt++);
+				}
+			}
+		}
+		
+		for (Gem g : cost.keySet()) {
+			int handTokenAmt = tokensToRemove.containsKey(g) ? tokensToRemove.get(g) : 0;
+			
+			if (cost.get(g) > handTokenAmt) {
+				needsToUseWilds = true;
+				
+				if (tokensAmts.containsKey(new Gem("Wild")) && tokensAmts.get(new Gem("Wild")) >= cost.get(g) - handTokenAmt) {
+					tokensToRemove.put(g, handTokenAmt);
+					if (!tokensToRemove.containsKey(new Gem("Wild"))) {
+						tokensToRemove.put(new Gem("Wild"), cost.get(g)-handTokenAmt);
+					} else {
+						int amt = tokensToRemove.get(new Gem("Wild"));
+						tokensToRemove.put(new Gem("Wild"), (amt + (cost.get(g) - handTokenAmt)));
+					}
+				} else {
+					return null;
+				}
+			}
+		}
+		
+		if (needsToUseWilds) {
+			final boolean[] useWild = {false};
+	        Runnable doYouWantAWild = new Runnable() {
+	          public void run() {
+	            useWild[0] = true;
+	            System.out.println("Using wild");
+	          }
+	        };
+	        Game.showToast("Do you want to use your wilds?", "Use your wild(s)?","Yes", doYouWantAWild);
+	        if (useWild[0]) {
+	        	return tokensToRemove;
+	        } else {
+	        	return null;
+	        }
+		}
+		
+		return tokensToRemove;
+	}
+	
+	public boolean reserveCheck() {
+		if (tokens.containsKey(new Gem("Wild"))) { // For reserving cards
+			final boolean[] reserveCard = { false };
+			Runnable doYouWantToReserve = new Runnable() {
+				public void run() {
+					reserveCard[0] = true;
+					System.out.println("Reserving Card");
+				}
+			};
+			Game.showToast("Do you want to reserve the card?", "Reserve?", "Yes", doYouWantToReserve);
+			
+			if (reserveCard[0]) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
     public boolean canAffordNoble(Noble x) {
         boolean check = false;
         for(Gem g : x.getCost().keySet()) {
@@ -132,6 +163,11 @@ public class Hand {
     }
 
     public void removeToken(Token t) {
+    	if (!tokens.containsKey(t.getGem()) && tokens.containsKey(new Gem("Wild"))) {
+    		tokens.get(new Gem("Wild")).remove(0);
+    		return;
+    	}
+    	
 		tokens.get(t.getGem()).remove(t);
 		
 		if(tokens.get(t.getGem()).size() == 0) {
@@ -435,9 +471,10 @@ public class Hand {
 		}
 	}
 	
-	public void addReservedForTesting(Card c, Token t) {
+	public void addReservedCard(Card c) {
+		c.flip();
 		reservedCards.add(c);
-		reservedTokens.add(t);
+		reservedTokens.add(tokens.get(new Gem("Wild")).get(0));
 	}
 
 }
