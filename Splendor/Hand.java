@@ -60,7 +60,7 @@ public class Hand {
     }
 
 	public HashMap<Gem, Integer> canAfford(Card x) {
-		HashMap<Gem, Integer> cost = x.getCost();
+		HashMap<Gem, Integer> costs = x.getCost();
 		HashMap<Gem, Integer> tokensToRemove = new HashMap<Gem, Integer>();
 		boolean needsToUseWilds = false;
 		TreeMap<Gem, Integer> tokensAmts = new TreeMap<Gem, Integer>();
@@ -73,29 +73,37 @@ public class Hand {
 			}
 		}
 		
-		for (Gem g : cost.keySet()) {
+		for (Gem g : costs.keySet()) {
+			int cost = costs.get(g);
+			
+			if (cards.containsKey(g)) {
+				cost -= cards.get(g).size();
+			}
+			
 			int handTokenAmt = tokensAmts.containsKey(g) ? tokensAmts.get(g) : 0;
-			if (cost.get(g) > handTokenAmt) {
+			if (cost <= 0) {
+				
+			} else if (cost > handTokenAmt) {
 				needsToUseWilds = true;
 				
-				if (tokensAmts.containsKey(new Gem("Wild")) && tokensAmts.get(new Gem("Wild")) >= (cost.get(g) - handTokenAmt)) {
+				if (tokensAmts.containsKey(new Gem("Wild")) && tokensAmts.get(new Gem("Wild")) >= (cost - handTokenAmt)) {
 					tokensToRemove.put(g, handTokenAmt);
 					tokensAmts.put(g, 0);
 					if (!tokensToRemove.containsKey(new Gem("Wild"))) {
-						tokensToRemove.put(new Gem("Wild"), cost.get(g)-handTokenAmt);
+						tokensToRemove.put(new Gem("Wild"), cost-handTokenAmt);
 					} else {
 						int amt = tokensToRemove.get(new Gem("Wild"));
-						tokensToRemove.put(new Gem("Wild"), (amt + (cost.get(g) - handTokenAmt)));
+						tokensToRemove.put(new Gem("Wild"), (amt + (cost - handTokenAmt)));
 					}
 					int wildTokenAmt = tokensAmts.get(new Gem("Wild"));
-					tokensAmts.put(new Gem("Wild"), wildTokenAmt-(cost.get(g)-handTokenAmt));
+					tokensAmts.put(new Gem("Wild"), wildTokenAmt-(cost-handTokenAmt));
 				} else {
 					return null;
 				}
 			} else {
 				int amt = tokensAmts.get(g);
-				tokensAmts.put(g, amt-cost.get(g));
-				tokensToRemove.put(g, cost.get(g));
+				tokensAmts.put(g, amt-cost);
+				tokensToRemove.put(g, cost);
 			}
 		}
 		
@@ -119,19 +127,31 @@ public class Hand {
 	}
 	
 	public boolean reserveCheck() {
-		if (tokens.containsKey(new Gem("Wild"))) { // For reserving cards
-			final boolean[] reserveCard = { false };
-			Runnable doYouWantToReserve = new Runnable() {
+		if (reservedCards.size() >= 3) {
+			Game.showToast("Cannot afford card, too many cards reserved", "Alert!", "Pick again", new Runnable() {
 				public void run() {
-					reserveCard[0] = true;
-					System.out.println("Reserving Card");
+					return;
 				}
-			};
-			Game.showToast("Cannot afford card, reserve?", "Reserve?", "Yes", doYouWantToReserve);
-			
-			if (reserveCard[0]) {
-				return true;
+			});
+			return false;
+		}
+		
+		final boolean[] reserveCard = { false };
+		Runnable doYouWantToReserve = new Runnable() {
+			public void run() {
+				reserveCard[0] = true;
+				System.out.println("Reserving Card");
 			}
+		};
+		
+		if (game.containsWildToken()) {
+			Game.showToast("Cannot afford card, reserve?", "Reserve?", "Yes", doYouWantToReserve);
+		} else {
+			Game.showToast("Cannot afford card, reserve?", "Reserve? (no wilds)", "Yes", doYouWantToReserve);
+		}
+
+		if (reserveCard[0]) {
+			return true;
 		}
 		
 		return false;
@@ -195,7 +215,7 @@ public class Hand {
 		int amtOfCardStacks = 0;
 		for (Gem g : cards.keySet()) {
 			if (cards.get(g).size() > 0) {
-				amtOfCardStacks++;
+				amtOfCardStacks += Math.ceil((double)cards.get(g).size() / 3.0);
 			}
 		}
 
@@ -210,18 +230,25 @@ public class Hand {
 				x = (int) (frameWidth / 2 - width / 2);
 				y = (int) (frameHeight / 2 - game.getHeight() / 2 - height - cardSpacingY * 3);
 			}
-
+			
 			// Calculating the cards coordinates
 			int count = 0;
 			for (Gem g : cards.keySet()) {
 				ArrayList<Card> c = cards.get(g);
 				int yOffsetCount = 0;
+				int xOffsetCount = 0;
 				for (Card card : c) {
 					card.setWidth((int) cardWidth);
 					card.setHeight((int) cardHeight);
 					card.setX((int) (x + (cardSpacingX + cardWidth) * count));
 					card.setY((int) (y + (cardSpacingY + cardHeight / 13) * yOffsetCount));
 					yOffsetCount++;
+					xOffsetCount++;
+					
+					if (xOffsetCount == 3) {
+						count++;
+						yOffsetCount = 0;
+					}
 				}
 				count++;
 			}
@@ -280,7 +307,7 @@ public class Hand {
 			int reservedCardsOffset = 0;
 			for (Card c : reservedCards) {
 				int xOffset = (int) (x + width + cardSpacingX
-						+ (chipRadius + chipSpacing) * (xOutlierCountTokens / 2 + reservedCardsOffset));
+						+ (cardWidth + cardSpacingX) * (reservedCardsOffset) + (chipRadius + chipSpacing) * (xOutlierCountTokens / 2));
 				
 				if (xOutlierCountTokens % 2 != 0) {
 					xOffset += (int) (chipRadius + chipSpacing);
@@ -290,14 +317,18 @@ public class Hand {
 				c.setHeight((int) cardHeight);
 				c.setX(xOffset);
 				c.setY(y);
-
-				Token t = reservedTokens.get(reservedCardsOffset);
-				t.setWidth((int) chipRadius);
-				t.setHeight((int) chipRadius);
-				t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
-				t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
-
-				reservedCardsOffset++;
+				
+				if (reservedCardsOffset < reservedTokens.size()) {
+					Token t = reservedTokens.get(reservedCardsOffset);
+					
+					if (t !=  null) {
+						t.setWidth((int) chipRadius);
+						t.setHeight((int) chipRadius);
+						t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
+						t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
+					}
+					reservedCardsOffset++;
+				}
 			}
 		} else { // Is vertically positioned
 			if (amtOfCardStacks == 1) {
@@ -464,21 +495,45 @@ public class Hand {
 				c.setX(xOffset);
 				c.setY(yReserved);
 
-				Token t = reservedTokens.get(reservedCardsOffset);
-				t.setWidth((int) chipRadius);
-				t.setHeight((int) chipRadius);
-				t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
-				t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
-
-				reservedCardsOffset++;
+				if (reservedCardsOffset < reservedTokens.size()) {
+					Token t = reservedTokens.get(reservedCardsOffset);
+					if (t != null) {
+						t.setWidth((int) chipRadius);
+						t.setHeight((int) chipRadius);
+						t.setX((int) (c.getX() + c.getWidth()/2 - chipRadius/2));
+						t.setY((int) (c.getY() + c.getHeight()/2 - chipRadius/2));
+					}
+					reservedCardsOffset++;
+				}
 			}
 		}
 	}
 	
 	public void addReservedCard(Card c) {
 		reservedCards.add(c);
-		reservedTokens.add(tokens.get(new Gem("Wild")).get(0));
-		tokens.get(new Gem("Wild")).remove(0);
+		
+		if (game.containsWildToken()) {
+			reservedTokens.add(game.takeWildToken());
+		} else {
+			reservedTokens.add(null);
+		}
 	}
+	
+	public void removeReservedCard(Card c) {
+		int index = reservedCards.indexOf(c);
+		reservedCards.remove(index);
 
+		if (reservedTokens.get(index) != null) {
+			Token t = reservedTokens.remove(index);
+			
+			if (tokens.containsKey(new Gem("Wild"))) {
+				tokens.get(new Gem("Wild")).add(t);
+			} else {
+				tokens.put(new Gem("Wild"), new ArrayList<Token>());
+				tokens.get(new Gem("Wild")).add(t);
+			}
+		} else {
+			reservedTokens.remove(index);
+		}
+	}
 }

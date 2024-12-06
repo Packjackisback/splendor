@@ -38,34 +38,42 @@ public class GameState {
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
         
-        for (int i = 0; i < 4; i++) {
-        	hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
-        	hands.get(0).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
-        }
+        //for (int i = 0; i < 4; i++) {
+        //	hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        //	hands.get(0).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
+        //}
     }
 
-    public void nextTurn() {
-    	TreeMap<Gem, ArrayList<Card>> playerCards = hands.get(currentPlayer).getCards();
-    	for (Noble n : game.getNobles()) {
-    		boolean canAfford = true;
-    		HashMap<Gem, Integer> nobleCost = n.getCost();
-    		
-    		for (Gem g : nobleCost.keySet()) {
-    			if (!playerCards.containsKey(g) || nobleCost.get(g) > playerCards.get(g).size()) {
-    				canAfford = false;
-    			}
-    		}
-    		
-    		if (canAfford) {
-    			game.takeNoble(n);
-    			hands.get(currentPlayer).addNoble(n);
-    			break;
-    		}
-    	}
-    	
-        this.currentPlayer = (this.currentPlayer + 1) % 4;
-        drawnTokens = new ArrayList<Token>();
-    }
+	public void nextTurn() {
+		TreeMap<Gem, ArrayList<Card>> playerCards = hands.get(currentPlayer).getCards();
+		boolean isNobleChosen = false;
+		Noble nobleChosen = null;
+		for (Noble n : game.getNobles()) {
+			if (!isNobleChosen) {
+				boolean canAfford = true;
+				HashMap<Gem, Integer> nobleCost = n.getCost();
+
+				for (Gem g : nobleCost.keySet()) {
+					if (!playerCards.containsKey(g) || nobleCost.get(g) > playerCards.get(g).size()) {
+						canAfford = false;
+					}
+				}
+
+				if (canAfford) {
+					nobleChosen = n;
+					isNobleChosen = true;
+				}
+			}
+		}
+		
+		if (nobleChosen != null) {
+			game.takeNoble(nobleChosen);
+			hands.get(currentPlayer).addNoble(nobleChosen);
+		}
+		
+		this.currentPlayer = (this.currentPlayer + 1) % 4;
+		drawnTokens = new ArrayList<Token>();
+	}
 
     public void addCardToCurrentPlayer(Card c, HashMap<Gem, Integer> tokensToRemove) {  //TODO remove tokens from current player as needed
         TreeMap<Gem, ArrayList<Card>> current = getCurrentPlayerHand().getCards();
@@ -268,7 +276,9 @@ public class GameState {
         	}
         	
         	for (Token t : h.getReservedTokens()) {
-        		t.draw(g, 0);
+        		if (t != null) {
+        			t.draw(g, 0);
+        		}
         	}
         }
     }

@@ -91,6 +91,19 @@ public class Game {
 		cards.add(greenCards);
 		return cards;
 	}
+	public boolean containsWildToken() {
+		if (tokenBank.containsKey(new Gem("Wild"))) {
+			return true;
+		}
+		return false;
+	}
+	public Token takeWildToken() {
+		Token t = tokenBank.get(new Gem("Wild")).remove(0);
+		if (tokenBank.get(new Gem("Wild")).size() == 0) {
+			tokenBank.remove(new Gem("Wild"));
+		}
+		return t;
+	}
 	public TreeMap<Gem, ArrayList<Token>> getTokens() { return tokenBank; }
 	public ArrayList<Noble> getNobles() { return nobleBank; }
 	public int getX() { return x; }
@@ -266,9 +279,10 @@ public class Game {
 	
 	public Noble takeNoble(Noble y) {
 		Noble out = y;
-		nobleBank.set(nobleBank.indexOf(y), null);
+		nobleBank.remove(nobleBank.indexOf(y));
 		return(out);
 	}
+	
 	public void addToken(Token t) {
 		if(tokenBank.containsKey(t.getGem())) {
 			ArrayList<Token> tokenList = tokenBank.get(t.getGem());
@@ -284,6 +298,9 @@ public class Game {
 			tokenBank.get(t.getGem()).remove(tokenBank.get(t.getGem()).indexOf(t));
 			gamePanel.revalidate();
 			gamePanel.repaint();
+			if (tokenBank.get(t.getGem()).size() == 0) {
+				tokenBank.remove(t.getGem());
+			}
 			return(t);
 		}
 		return null;
