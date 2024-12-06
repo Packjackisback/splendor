@@ -14,12 +14,13 @@ public class GameState {
     private final int frameWidth;
     private final int frameHeight;
     private boolean lastTurns;
-    private static ArrayList<Hand> hands = new ArrayList<Hand>();
+    public static ArrayList<Hand> hands = new ArrayList<Hand>();
     private int currentPlayer;
     private ArrayList<Token> drawnTokens = new ArrayList<Token>();
     private EndPanel endPanel;
     private GameFrame gameFrame;
-
+    private boolean isEnd;
+    private int countEnd = 0;
     public static int[] getScore() {
         for (int i = 0; i < hands.size(); i++) {
             score[i] = hands.get(i).getScore();
@@ -110,6 +111,12 @@ public class GameState {
             checkCurrentPlayerTokenCount();
             //TODO implement reserving cards
             nextTurn();
+            if (isEnd) {
+                countEnd++;
+                invokeEnd();
+            } else {
+                endGameCheck();
+            }
             return;
         }
         
@@ -138,6 +145,12 @@ public class GameState {
                 hands.get(currentPlayer).addToken(t);
                 checkCurrentPlayerTokenCount();
                 nextTurn();
+                if (isEnd) {
+                    countEnd++;
+                    invokeEnd();
+                } else {
+                    endGameCheck();
+                }
                 return;
             }
         }
@@ -147,6 +160,12 @@ public class GameState {
         checkCurrentPlayerTokenCount();
         if (drawnTokens.size() >= 3) {
             nextTurn();
+            if (isEnd) {
+                countEnd++;
+                invokeEnd();
+            } else {
+                endGameCheck();
+            }
         }
     }
 
@@ -220,7 +239,7 @@ public class GameState {
     public void endGameCheck() {
         for(int i : score) {
             if(i>15) {
-              invokeEnd();
+                isEnd = true;
             }
         }
     }
@@ -284,6 +303,9 @@ public class GameState {
     }
 
     public void invokeEnd() {
-        gameFrame.setPanel(endPanel, score);
+        if (countEnd == 3)
+            gameFrame.setPanel(endPanel, score);
+        else
+            return;
     }
 }

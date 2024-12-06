@@ -1,11 +1,7 @@
 package Splendor;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 
-import javax.swing.Timer;
 
 import javax.swing.JPanel;
 
