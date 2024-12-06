@@ -29,24 +29,46 @@ public class MouseListener implements java.awt.event.MouseListener {
         for (ArrayList<Card> arr: cards) {
             for (Card card : arr) {
                 if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-                    if(gameState.getCurrentPlayerHand().canAfford(card)) {
+                	HashMap<Gem, Integer> canAffordReturn = gameState.getCurrentPlayerHand().canAfford(card);
+                    if(canAffordReturn != null) {
                         game.takeCard(card);
                         card.flip();
-                        gameState.addCardToCurrentPlayer(card);
+                        gameState.addCardToCurrentPlayer(card, canAffordReturn);
                         gameState.nextTurn();
-                    }
-                    else {
-                        Runnable okay = new Runnable() {
-                            public void run() {
-                                System.out.println("Okay");
-                            }
-                        };
-                        Game.showToast("Cannot afford card", "Error!", "Ok", okay);
+                    } else if (gameState.getCurrentPlayerHand().reserveCheck()) {
+                    	game.takeCard(card);
+                    	gameState.getCurrentPlayerHand().addReservedCard(card);
+                    	gameState.nextTurn();
                     }
                     break;
                 }
             }
         }
+        
+        ArrayList<Stack<Card>> drawCards = game.getDrawCards();
+    	for (Stack<Card> stack : drawCards) {
+    		Card card = stack.peek();
+    		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
+    			if (gameState.getCurrentPlayerHand().getTokens().containsKey(new Gem("Wild"))) {
+        			final boolean[] reserveCard = { false };
+        			Runnable doYouWantToReserve = new Runnable() {
+        				public void run() {
+        					reserveCard[0] = true;
+        					System.out.println("Reserving Card");
+        				}
+        			};
+        			Game.showToast("Reserve the draw card?", "Reserve?", "Yes", doYouWantToReserve);
+        			
+        			if (reserveCard[0]) {
+        				card = stack.pop(); // To remove the card
+            			card.flip();
+            			gameState.getCurrentPlayerHand().addReservedCard(card);
+        			}
+        			
+        			break;
+    			}
+    		}
+    	}
     }
 
     @Override
