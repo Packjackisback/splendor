@@ -18,11 +18,13 @@ public class MouseListener implements java.awt.event.MouseListener {
         int y = e.getY();
         for (Gem gem : tokenKeys) {
         	for (Token token : game.getTokens().get(gem)) {
-        		if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
-                    gameState.addTokenToCurrentPlayer(token, game.getTokens().get(gem).size()>2);
-                    cards = game.getCardArray();
-                    break;
-                }
+        		if (!token.isWild()) {
+        			if (x >= token.getX() && x <= token.getX() + token.getWidth() && y >= token.getY() && y <= token.getY() + token.getHeight()) {
+                        gameState.addTokenToCurrentPlayer(token, game.getTokens().get(gem).size()>2);
+                        cards = game.getCardArray();
+                        break;
+                    }
+        		}
         	}
         }
 
@@ -49,23 +51,42 @@ public class MouseListener implements java.awt.event.MouseListener {
     	for (Stack<Card> stack : drawCards) {
     		Card card = stack.peek();
     		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-    			if (gameState.getCurrentPlayerHand().getTokens().containsKey(new Gem("Wild"))) {
-        			final boolean[] reserveCard = { false };
-        			Runnable doYouWantToReserve = new Runnable() {
-        				public void run() {
-        					reserveCard[0] = true;
-        					System.out.println("Reserving Card");
-        				}
-        			};
-        			Game.showToast("Reserve the draw card?", "Reserve?", "Yes", doYouWantToReserve);
-        			
-        			if (reserveCard[0]) {
-        				card = stack.pop(); // To remove the card
-            			card.flip();
-            			gameState.getCurrentPlayerHand().addReservedCard(card);
-        			}
-        			
-        			break;
+				final boolean[] reserveCard = { false };
+				Runnable doYouWantToReserve = new Runnable() {
+					public void run() {
+						reserveCard[0] = true;
+						System.out.println("Reserving Card");
+					}
+				};
+				if (game.containsWildToken()) {
+					Game.showToast("Reserve the draw card?", "Reserve?", "Yes", doYouWantToReserve);
+				} else {
+					Game.showToast("Reserve the draw card?", "Reserve? (no wilds)", "Yes", doYouWantToReserve);
+				}
+
+				if (reserveCard[0]) {
+					card = stack.pop(); // To remove the card
+					card.flip();
+					gameState.getCurrentPlayerHand().addReservedCard(card);
+					game.getPanel().repaint();
+					gameState.nextTurn();
+				}
+
+				break;
+    		}
+    	}
+    	
+    	ArrayList<Card> playersReservedCards = gameState.getCurrentPlayerHand().getReservedCards();
+    	for (Card card : playersReservedCards) {
+    		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
+				HashMap<Gem, Integer> canAffordReturn = gameState.getCurrentPlayerHand().canAfford(card);
+    			if (canAffordReturn != null) {
+    				card.flip(); // Because the gamestate function flips it
+    				gameState.addCardToCurrentPlayer(card, canAffordReturn);
+					gameState.getCurrentPlayerHand().removeReservedCard(card);
+                    gameState.nextTurn();
+                    game.getPanel().repaint();
+                    break;
     			}
     		}
     	}
