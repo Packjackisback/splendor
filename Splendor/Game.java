@@ -279,7 +279,15 @@ public class Game {
 	
 	public Noble takeNoble(Noble y) {
 		Noble out = y;
-		nobleBank.remove(nobleBank.indexOf(y));
+		for (int i = 0; i < nobleBank.size(); i++) {
+			Noble n = nobleBank.get(i);
+			if (n.getNobleImgString().equals(y.getNobleImgString())) {
+				System.out.println("Removed Noble: " + n + " at index " + i);
+				System.out.println(nobleBank.get(i));
+				nobleBank.remove(i);
+				break;
+			}
+		}
 		return(out);
 	}
 	
@@ -348,31 +356,37 @@ public class Game {
 				System.out.println(card);
 			}
 			System.out.println("The current index of card " + c + " is " + greenBoard.indexOf(c));
-
-			greenBoard.remove(greenBoard.indexOf(c));
+			
+			Card newCard = greenCards.pop();
+			newCard.flip();
+			
+			greenBoard.set(greenBoard.indexOf(c), newCard);
 			System.out.println("The new board is:");
 			for(Card card : greenBoard) {
 				System.out.println(card);
 			}
 			gamePanel.revalidate();
 			gamePanel.repaint();
-			dealCards();
 			return c;
 		}
 		if(yellowBoard.contains(c)) {
 			System.out.println("yellow");
-			yellowBoard.remove(c);
+			Card newCard = yellowCards.pop();
+			newCard.flip();
+			
+			yellowBoard.set(yellowBoard.indexOf(c), newCard);
 			gamePanel.revalidate();
 			gamePanel.repaint();
-			dealCards();
 			return c;
 		}
 		if(blueBoard.contains(c)) {
 			System.out.println("blue");
-			blueBoard.remove(c);
+			Card newCard = blueCards.pop();
+			newCard.flip();
+			
+			blueBoard.set(blueBoard.indexOf(c), newCard);
 			gamePanel.revalidate();
 			gamePanel.repaint();
-			dealCards();
 			return c;
 		}
 
