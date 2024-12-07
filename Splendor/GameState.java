@@ -14,19 +14,20 @@ public class GameState {
     private final int frameWidth;
     private final int frameHeight;
     private boolean lastTurns;
-    private static ArrayList<Hand> hands = new ArrayList<Hand>();
+    private int playerLastTurnIndex;
+    public static ArrayList<Hand> hands = new ArrayList<Hand>();
     private int currentPlayer;
     private ArrayList<Token> drawnTokens = new ArrayList<Token>();
     private EndPanel endPanel;
     private GameFrame gameFrame;
 
-    public static int[] getScore() {
-        for (int i = 0; i < hands.size(); i++) {
-            score[i] = hands.get(i).getScore();
-        }
-        System.out.println(Arrays.toString(score));
-        return score;
-    }
+	public static TreeMap<Integer, Integer> getScore() { // Returns playerNum, score
+		TreeMap<Integer, Integer> scoreMap = new TreeMap<Integer, Integer>();
+		for (int i = 0; i < hands.size(); i++) {
+			scoreMap.put(i + 1, hands.get(i).getScore());
+		}
+		return scoreMap;
+	}
 
     public GameState(Game game, EndPanel endPanel, GameFrame gameFrame) {
         this.game = game;
@@ -38,10 +39,17 @@ public class GameState {
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
         
-        //for (int i = 0; i < 4; i++) {
-        //	hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
-        //	hands.get(0).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
-        //}
+        for (int i = 0; i < 4; i++) {
+        	hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 14, new HashMap<Gem, Integer>(), 0));
+        	//hands.get(1).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
+        	//hands.get(1).addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 0));
+        	//hands.get(1).addCard(new Card("Splendor/assets/Cards/015.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        	
+        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
+        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
+        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 0));
+        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/015.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        }
     }
 
 	public void nextTurn() {
@@ -60,8 +68,11 @@ public class GameState {
 				}
 
 				if (canAfford) {
+					System.out.println("Noble " + n + " can afford");
 					nobleChosen = n;
 					isNobleChosen = true;
+				} else {
+					System.out.println("Noble " + n + " can't afford");
 				}
 			}
 		}
@@ -71,16 +82,26 @@ public class GameState {
 			hands.get(currentPlayer).addNoble(nobleChosen);
 		}
 		
+		if (this.lastTurns == false) {
+			endGameCheck();
+		}
+		
 		this.currentPlayer = (this.currentPlayer + 1) % 4;
+		
+		if (this.lastTurns && currentPlayer == playerLastTurnIndex) {
+			invokeEnd();
+			return;
+		}
+		
 		drawnTokens = new ArrayList<Token>();
 	}
 
     public void addCardToCurrentPlayer(Card c, HashMap<Gem, Integer> tokensToRemove) {  //TODO remove tokens from current player as needed
+    	System.out.println("Adding card, tokens to remove: " + tokensToRemove);
         TreeMap<Gem, ArrayList<Card>> current = getCurrentPlayerHand().getCards();
         for(Gem g : tokensToRemove.keySet()) {
           //First, we need to find the gem cost - the discount
           int tokenToRemove = tokensToRemove.get(g);
-          tokenToRemove -= current.containsKey(g) ? current.get(g).size() : 0;
           
           while(tokenToRemove>0) {
             game.addToken(new Token(g));
@@ -202,7 +223,6 @@ public class GameState {
         return dialog;
     }
     public void returnTokens(Token t) {
-        hands.get(currentPlayer).removeToken(t);
         game.addToken(t);
     }
 
@@ -218,10 +238,12 @@ public class GameState {
     }
 
     public void endGameCheck() {
-        for(int i : score) {
-            if(i>15) {
-              invokeEnd();
-            }
+        for(Hand h : hands) {
+          if(h.getScore()>15) {
+        	  setLastTurns(true);
+        	  playerLastTurnIndex = currentPlayer;
+        	  break;
+          }
         }
     }
 
@@ -284,6 +306,13 @@ public class GameState {
     }
 
     public void invokeEnd() {
+    	for (int i = 0; i < 4; i++) {
+	    	score[i] = hands.get(i).getScore();
+    	}
         gameFrame.setPanel(endPanel, score);
+    }
+    
+    public ArrayList<Token> getDrawnTokens() {
+    	return drawnTokens;
     }
 }
