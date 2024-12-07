@@ -27,69 +27,71 @@ public class MouseListener implements java.awt.event.MouseListener {
         		}
         	}
         }
-
-        for (ArrayList<Card> arr: cards) {
-            for (Card card : arr) {
-                if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-                	HashMap<Gem, Integer> canAffordReturn = gameState.getCurrentPlayerHand().canAfford(card);
-                    if(canAffordReturn != null) {
-                        game.takeCard(card);
-                        card.flip();
-                        gameState.addCardToCurrentPlayer(card, canAffordReturn);
-                        gameState.nextTurn();
-                    } else if (gameState.getCurrentPlayerHand().reserveCheck()) {
-                    	game.takeCard(card);
-                    	gameState.getCurrentPlayerHand().addReservedCard(card);
-                    	gameState.nextTurn();
-                    }
-                    break;
-                }
-            }
-        }
         
-        ArrayList<Stack<Card>> drawCards = game.getDrawCards();
-    	for (Stack<Card> stack : drawCards) {
-    		Card card = stack.peek();
-    		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-				final boolean[] reserveCard = { false };
-				Runnable doYouWantToReserve = new Runnable() {
-					public void run() {
-						reserveCard[0] = true;
-						System.out.println("Reserving Card");
+        if (gameState.getDrawnTokens().size() == 0) {
+	        for (ArrayList<Card> arr: cards) {
+	            for (Card card : arr) {
+	                if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
+	                	HashMap<Gem, Integer> canAffordReturn = gameState.getCurrentPlayerHand().canAfford(card);
+	                    if(canAffordReturn != null) {
+	                        game.takeCard(card);
+	                        card.flip();
+	                        gameState.addCardToCurrentPlayer(card, canAffordReturn);
+	                        gameState.nextTurn();
+	                    } else if (gameState.getCurrentPlayerHand().reserveCheck()) {
+	                    	game.takeCard(card);
+	                    	gameState.getCurrentPlayerHand().addReservedCard(card);
+	                    	gameState.nextTurn();
+	                    }
+	                    break;
+	                }
+	            }
+	        }
+	        
+	        ArrayList<Stack<Card>> drawCards = game.getDrawCards();
+	    	for (Stack<Card> stack : drawCards) {
+	    		Card card = stack.peek();
+	    		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
+					final boolean[] reserveCard = { false };
+					Runnable doYouWantToReserve = new Runnable() {
+						public void run() {
+							reserveCard[0] = true;
+							System.out.println("Reserving Card");
+						}
+					};
+					if (game.containsWildToken()) {
+						Game.showToast("Reserve the draw card?", "Reserve?", "Yes", doYouWantToReserve);
+					} else {
+						Game.showToast("Reserve the draw card?", "Reserve? (no wilds)", "Yes", doYouWantToReserve);
 					}
-				};
-				if (game.containsWildToken()) {
-					Game.showToast("Reserve the draw card?", "Reserve?", "Yes", doYouWantToReserve);
-				} else {
-					Game.showToast("Reserve the draw card?", "Reserve? (no wilds)", "Yes", doYouWantToReserve);
-				}
-
-				if (reserveCard[0]) {
-					card = stack.pop(); // To remove the card
-					card.flip();
-					gameState.getCurrentPlayerHand().addReservedCard(card);
-					game.getPanel().repaint();
-					gameState.nextTurn();
-				}
-
-				break;
-    		}
-    	}
-    	
-    	ArrayList<Card> playersReservedCards = gameState.getCurrentPlayerHand().getReservedCards();
-    	for (Card card : playersReservedCards) {
-    		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
-				HashMap<Gem, Integer> canAffordReturn = gameState.getCurrentPlayerHand().canAfford(card);
-    			if (canAffordReturn != null) {
-    				card.flip(); // Because the gamestate function flips it
-    				gameState.addCardToCurrentPlayer(card, canAffordReturn);
-					gameState.getCurrentPlayerHand().removeReservedCard(card);
-                    gameState.nextTurn();
-                    game.getPanel().repaint();
-                    break;
-    			}
-    		}
-    	}
+	
+					if (reserveCard[0]) {
+						card = stack.pop(); // To remove the card
+						card.flip();
+						gameState.getCurrentPlayerHand().addReservedCard(card);
+						game.getPanel().repaint();
+						gameState.nextTurn();
+					}
+	
+					break;
+	    		}
+	    	}
+	    	
+	    	ArrayList<Card> playersReservedCards = gameState.getCurrentPlayerHand().getReservedCards();
+	    	for (Card card : playersReservedCards) {
+	    		if (x >= card.getX() && x <= card.getX() + card.getWidth() && y >= card.getY() && y <= card.getY() + card.getHeight()) {
+					HashMap<Gem, Integer> canAffordReturn = gameState.getCurrentPlayerHand().canAfford(card);
+	    			if (canAffordReturn != null) {
+	    				card.flip(); // Because the gamestate function flips it
+	    				gameState.addCardToCurrentPlayer(card, canAffordReturn);
+						gameState.getCurrentPlayerHand().removeReservedCard(card);
+	                    gameState.nextTurn();
+	                    game.getPanel().repaint();
+	                    break;
+	    			}
+	    		}
+	    	}
+        }
     }
 
     @Override
