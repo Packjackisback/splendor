@@ -498,6 +498,14 @@ public class Hand {
 						}
 					}
 					
+					if (cards.keySet().size() == 0 && tokens.keySet().size() > 0) {
+						if (tokens.keySet().size() >= 3) {
+							xReserved = (int)(x + 3 * (chipRadius + chipSpacing));
+						} else {
+							xReserved = (int)(x + tokens.keySet().size() * (chipRadius + chipSpacing));
+						}
+					}
+					
 					c.setWidth((int) cardWidth);
 					c.setHeight((int) cardHeight);
 					c.setX(xReserved);
@@ -519,23 +527,14 @@ public class Hand {
 					int xReserved = (int)(x - cardSpacingX - cardWidth);
 					int yReserved = (int)(y + (cardHeight + cardSpacingY) * reservedCardsOffset);
 					
-					if (cards.keySet().size() > 1 && tokens.keySet().size() > 1) {
-						int reservedCount = 1;
-						int tokenCount = 1;
-						for (Gem g : cards.keySet()) {
-							if (tokenCount == 2) {
-								for (Gem g2 : tokens.keySet()) {
-									if (tokenCount == 2 && g.equals(g2)) {
-										xReserved -= (int) (chipRadius + chipRadius / 7);
-									}
-									tokenCount++;
-								}
+					if (cards.keySet().iterator().hasNext()) {
+						Gem cardGem = cards.keySet().iterator().next();
+						Iterator<Gem> tokenIter = tokens.keySet().iterator();
+						while (tokenIter.hasNext()) {
+							Gem tokenGem = tokenIter.next();
+							if (tokenGem.getGemType().equals(cardGem.getGemType())) {
+								xReserved -= (int) (chipRadius + chipRadius / 7);
 							}
-							reservedCount++;
-						}
-					} else if (cards.keySet().size() == 1 && tokens.keySet().size() == 1) {
-						if (cards.keySet().iterator().next().equals(tokens.keySet().iterator().next())) {
-							xReserved -= (int) (chipRadius + chipRadius / 7);
 						}
 					}
 					
