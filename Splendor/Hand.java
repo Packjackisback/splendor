@@ -218,7 +218,11 @@ public class Hand {
 		int amtOfCardStacks = 0;
 		for (Gem g : cards.keySet()) {
 			if (cards.get(g).size() > 0) {
-				amtOfCardStacks += Math.ceil((double)cards.get(g).size() / 3.0);
+				if (isHorizontal) {
+					amtOfCardStacks += Math.ceil((double)cards.get(g).size() / 3.0);
+				} else {
+					amtOfCardStacks++;	
+				}
 			}
 		}
 
@@ -248,7 +252,7 @@ public class Hand {
 					yOffsetCount++;
 					xOffsetCount++;
 					
-					if (xOffsetCount == 3) {
+					if (xOffsetCount % 4 == 0 && xOffsetCount >= 4) {
 						count++;
 						yOffsetCount = 0;
 					}
@@ -361,6 +365,23 @@ public class Hand {
 			int maxAmtOfCards = 0;
 			int highestYValue = 0;
 			for (Gem g : cards.keySet()) { // Calculating cards
+				if (count != 0 && count != 1) {
+					System.out.println("CALLED, COUNT IS " + count);
+					Iterator<Gem> gemIterator = cards.keySet().iterator();
+					int iterCount = 0;
+					while (gemIterator.hasNext()) {
+						if (iterCount == count-2) {
+							ArrayList<Card> cardsList = cards.get(gemIterator.next());
+							int yValue = cardsList.get(cardsList.size() - 1).getY();
+							System.out.println("Count is " + count + " yValue is " + yValue);
+							yOffset += yValue - y + cardHeight + cardSpacingY;
+							break;
+						} else {
+							gemIterator.next();
+						}
+						iterCount++;
+					}
+				}
 				ArrayList<Card> c = cards.get(g);
 				int xOffset = count % 2 == 0 ? 0 : (int) (cardSpacingX + cardWidth);
 				int cardsListYOffset = 0;
@@ -378,9 +399,9 @@ public class Hand {
 						}
 					}
 
-					if (count == 1 && playerNum == 3) {
+					if (count % 2 == 1 && playerNum == 3) {
 						needsOffsetForNobles = true;
-					} else if (count == 0 && playerNum == 1) {
+					} else if (count % 2 == 0 && playerNum == 1) {
 						needsOffsetForNobles = true;
 					}
 				}
@@ -398,11 +419,9 @@ public class Hand {
 				if (cardsListYOffset > maxAmtOfCards) {
 					maxAmtOfCards = cardsListYOffset;
 				}
-				if (count % 2 == 1) {
-					yOffset += (int) (cardHeight + cardSpacingY + (maxAmtOfCards - 1) * (cardSpacingY + cardHeight / 13));
-					maxAmtOfCards = 0;
-				}
+				
 				count++;
+				yOffset = 0;
 			}
 
 			if (highestYValue != 0) {
