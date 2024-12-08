@@ -39,20 +39,20 @@ public class GameState {
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
         
-        for (int i = 0; i < 4; i++) {
-        	hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 14, new HashMap<Gem, Integer>(), 0));
-        	//hands.get(1).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
-        	//hands.get(1).addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 0));
-        	//hands.get(1).addCard(new Card("Splendor/assets/Cards/015.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
-        	
-        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 0, new HashMap<Gem, Integer>(), 0));
-        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/012.jpg", new Gem("Blue"), 0, new HashMap<Gem, Integer>(), 0));
-        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/013.jpg", new Gem("Green"), 0, new HashMap<Gem, Integer>(), 0));
-        	//hands.get(3).addCard(new Card("Splendor/assets/Cards/015.jpg", new Gem("Black"), 0, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 15, new HashMap<Gem, Integer>(), 0));
+        //hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 11, new HashMap<Gem, Integer>(), 0));
+        //hands.get(2).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 8, new HashMap<Gem, Integer>(), 0));
+        //hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 4, new HashMap<Gem, Integer>(), 0));
+        for (int i = 0; i < 3; i++) {
+        	hands.get(0).addToken(new Token(new Gem("Red")));
+        	hands.get(0).addToken(new Token(new Gem("Blue")));
+        	hands.get(0).addToken(new Token(new Gem("Green")));
         }
+        hands.get(0).addToken(new Token(new Gem("White")));
     }
 
 	public void nextTurn() {
+		System.out.println("Next turn called.");
 		TreeMap<Gem, ArrayList<Card>> playerCards = hands.get(currentPlayer).getCards();
 		boolean isNobleChosen = false;
 		Noble nobleChosen = null;
@@ -90,7 +90,6 @@ public class GameState {
 		
 		if (this.lastTurns && currentPlayer == playerLastTurnIndex) {
 			invokeEnd();
-			return;
 		}
 		
 		drawnTokens = new ArrayList<Token>();
@@ -179,49 +178,56 @@ public class GameState {
         if(totalSize > 10) game.showDialog(displayTokenLimitDialog());
     }
     
-    private JDialog displayTokenLimitDialog() {
-        System.out.println("too many tokens! Calling dialog");
-        TreeMap<Gem, ArrayList<Token>> tokenMap = hands.get(currentPlayer).getTokens();
-        JDialog dialog = new JDialog();
-        dialog.setTitle("Token Limit Exceeded");
+	private JDialog displayTokenLimitDialog() {
+		System.out.println("Too many tokens! Calling dialog.");
+		int currentPlayerHold = currentPlayer;
+		TreeMap<Gem, ArrayList<Token>> tokenMap = hands.get(currentPlayerHold).getTokens();
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(tokenMap.size(), 2));
+		JDialog dialog = new JDialog();
+		dialog.setTitle("Token Limit Exceeded");
 
-        // Create checkboxes for each token type
-        for (Map.Entry<Gem, ArrayList<Token>> entry : tokenMap.entrySet()) {
-            JCheckBox checkbox = new JCheckBox(entry.getKey().getGemType());
-            panel.add(checkbox);
-        }
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(tokenMap.size(), 2));
 
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(e -> {
-            // Get selected token types and discard one token for each selected type
-            for (Component component : panel.getComponents()) {
-                if (component instanceof JCheckBox && ((JCheckBox) component).isSelected()) {
-                    String selectedGemType = ((JCheckBox) component).getText();
-                    for (Map.Entry<Gem, ArrayList<Token>> entry : tokenMap.entrySet()) {
-                        if (entry.getKey().getGemType().equals(selectedGemType)) {
-                            ArrayList<Token> tokens = entry.getValue();
-                            if (!tokens.isEmpty()) {
-                                Token tokenToRemove = tokens.remove(0); // Remove the first token
-                                returnTokens(tokenToRemove); // Return the token to the game
-                                break; // Found the matching gem type, no need to continue the loop
-                            }
-                        }
-                    }
-                }
-            }
-            dialog.dispose();
-        });
+		ButtonGroup buttonGroup = new ButtonGroup();
 
-        panel.add(okButton);
-        dialog.add(panel);
-        dialog.pack();
-        dialog.setLocationRelativeTo(null);
+		for (Map.Entry<Gem, ArrayList<Token>> entry : tokenMap.entrySet()) {
+			JCheckBox checkbox = new JCheckBox(entry.getKey().getGemType());
+			panel.add(checkbox);
+			buttonGroup.add(checkbox);
+		}
 
-        return dialog;
-    }
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(e -> {
+			for (Component component : panel.getComponents()) {
+				if (component instanceof JCheckBox && ((JCheckBox) component).isSelected()) {
+					String selectedGemType = ((JCheckBox) component).getText();
+					for (Map.Entry<Gem, ArrayList<Token>> entry : tokenMap.entrySet()) {
+						if (entry.getKey().getGemType().equals(selectedGemType)) {
+							ArrayList<Token> tokens = entry.getValue();
+							if (!tokens.isEmpty()) {
+								Token tokenToRemove = tokens.get(0);
+								System.out.println("Current player: " + currentPlayerHold);
+								hands.get(currentPlayerHold).removeToken(tokenToRemove);
+								returnTokens(tokenToRemove);
+							}
+							break;
+						}
+					}
+					break;
+				}
+			}
+			dialog.dispose();
+		});
+
+		dialog.add(panel, BorderLayout.CENTER);
+		dialog.add(okButton, BorderLayout.SOUTH);
+		dialog.setLocationRelativeTo(null);
+		dialog.pack();
+		dialog.setVisible(true);
+		return dialog;
+	}
+
     public void returnTokens(Token t) {
         game.addToken(t);
     }
@@ -237,15 +243,15 @@ public class GameState {
     public void updateSpecs(int fWidth, int fHeight) {
     }
 
-    public void endGameCheck() {
-        for(Hand h : hands) {
-          if(h.getScore()>15) {
-        	  setLastTurns(true);
-        	  playerLastTurnIndex = currentPlayer;
-        	  break;
-          }
-        }
-    }
+	public void endGameCheck() {
+		Hand h = hands.get(currentPlayer);
+		System.out.println("Hand score: " + h.getScore());
+		if (h.getScore() >= 15) {
+			setLastTurns(true);
+			playerLastTurnIndex = currentPlayer;
+		}
+
+	}
 
     public Hand getCurrentPlayerHand() {
         return hands.get(currentPlayer);
@@ -309,7 +315,8 @@ public class GameState {
     	for (int i = 0; i < 4; i++) {
 	    	score[i] = hands.get(i).getScore();
     	}
-        gameFrame.setPanel(endPanel, score);
+        gameFrame.setPanel(endPanel, score, hands);
+        game.getPanel().repaint();
     }
     
     public ArrayList<Token> getDrawnTokens() {

@@ -1,6 +1,7 @@
 package Splendor;
 import javax.swing.*;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 public class GameFrame extends JFrame {
     private final int WIDTH;
@@ -20,7 +21,8 @@ public class GameFrame extends JFrame {
         pack();
     }
 
-    public void setPanel(JPanel panel, int[] scores) {
+    public void setPanel(EndPanel panel, int[] scores, ArrayList<Hand> hands) {
+    	panel.updateScores(scores, hands);
         getContentPane().removeAll();
         getContentPane().add(panel);
         pack();

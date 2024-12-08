@@ -26,11 +26,12 @@ public class Hand {
         nobles = new ArrayList<Noble>();
         reservedCards = new ArrayList<Card>();
         reservedTokens = new ArrayList<Token>();
-        playerName = "Player " + (num-1);
+        playerName = "Player " + (num+1);
         //credits = new HashMap<Gem, Integer>();
     }
 
     // Getters
+    public String getPlayerName() { return playerName; }
     public TreeMap<Gem, ArrayList<Token>> getTokens() { return tokens; }
     public TreeMap<Gem, ArrayList<Card>> getCards() { return cards; }
     public int getPlayerNum() { return playerNum; }
@@ -227,7 +228,7 @@ public class Hand {
 
 			if (playerNum == 0) { // At the bottom of the screen
 				x = (int) (frameWidth / 2 - width / 2);
-				y = (int) (frameHeight / 2 + game.getHeight() / 2 + cardSpacingY * 2);
+				y = (int) (game.getY() + game.getHeight() + cardSpacingY * 5);
 			} else { // At the top of the screen
 				x = (int) (frameWidth / 2 - width / 2);
 				y = (int) (frameHeight / 2 - game.getHeight() / 2 - height - cardSpacingY * 3);

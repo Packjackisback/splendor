@@ -5,52 +5,111 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.List;
+
 public class EndPanel extends JPanel {
-    BufferedImage background;
-    private List<Map.Entry<Integer, Integer>> score; //Playernum, score
+	BufferedImage background;
+	private int[] scores; // Playernum, score
+	private ArrayList<Hand> hands;
+	
+	public EndPanel() {
+		this.background = Generator.loadImage("Splendor/assets/resultsScreen.PNG"); // Initialize with the Game instance
+		scores = new int[4];
 
-    public EndPanel() {
-        this.background = Generator.loadImage("Splendor/assets/resultsScreen.PNG");  // Initialize with the Game instance
-        //TreeMap<Integer, Integer> firstScores = GameState.getScore(); 
-        TreeMap<Integer, Integer> firstScores = new TreeMap<Integer, Integer>();
-        firstScores.put(new Integer(1), new Integer(5));
-        firstScores.put(new Integer(2), new Integer(9));
-        firstScores.put(new Integer(3), new Integer(15));
-        firstScores.put(new Integer(4), new Integer(2));
+		setPreferredSize(new Dimension(1920, 1080)); // Set a preferred size
+		setVisible(true);
+	}
 
-        score = new ArrayList<>(firstScores.entrySet());
-        score.sort((entry1, entry2) -> {
-            int valueCompare = entry1.getValue().compareTo(entry2.getValue());
-            System.out.println(""  + entry1.getValue() + " is more than " + entry2.getValue() + " : " + valueCompare);
-            if (valueCompare == 0) {
-              if(GameState.hands.get(entry1.getValue()-1).getCards().size()>GameState.hands.get(entry2.getValue()-1).getCards().size())  {
-                return 1;
-              }
-              if(GameState.hands.get(entry1.getValue()-1).getCards().size()<GameState.hands.get(entry2.getValue()-1).getCards().size()) {
-                return -1;
-              }
-              return 0; //if they have the same amount
-            }
-            return valueCompare;
-        }); //Now hopefully the winner is last
-        setPreferredSize(new Dimension(1920, 1080)); // Set a preferred size
-        setVisible(true);
-    }
+	public void updateScores(int[] scores, ArrayList<Hand> hands) {
+		this.scores = scores;
+		this.hands = hands;
+	}
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(background, 0, 0, null);
-        //TODO implement showing what score is the highest
-       
-        g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 200));
-        g.setColor(new Color(139, 69, 19));
-        g.drawString("Player " + score.get(3).getKey() + " WINS! " , getWidth() / 100, getHeight() / 8 + 100);
-        g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 75));
-        g.drawString("Score: " + score.get(3).getValue() , getWidth() / 100, getHeight() / 8 + 210);
-        g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 70));
-        g.drawString("Player " + score.get(2).getKey() + ": " + score.get(2).getValue(), getWidth() / 100 + 450, getHeight() / 8 + 210);
-        g.drawString("Player " + score.get(1).getKey() + ": " + score.get(1).getValue(), getWidth() / 100 + 450, getHeight() / 8 + 290);
-        g.drawString("Player " + score.get(0).getKey() + ": " + score.get(0).getValue(), getWidth() / 100 + 450, getHeight() / 8 + 370);
-    }
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(background, 0, 0, null);
+		// TODO implement showing what score is the highest
+		int highestScore = Integer.MIN_VALUE;
+		for (int score : scores) {
+			if (score > highestScore) {
+				highestScore = score;
+			}
+		}
+		
+		ArrayList<Integer> highestScorers = new ArrayList<Integer>();
+		ArrayList<Hand> losers = new ArrayList<Hand>();
+		for (int i = 0; i < scores.length; i++) {
+			if (scores[i] == highestScore) {
+				highestScorers.add(i);
+			} else {
+				losers.add(hands.get(i));
+			}
+		}
+		
+		if (highestScorers.size() > 1) { // There are hands with the same scores
+			int minimumHandSize = Integer.MAX_VALUE;
+			for (int i : highestScorers) {
+				if (hands.get(i).getCards().size() < minimumHandSize) {
+					minimumHandSize = hands.get(i).getCards().size();
+				}
+			}
+			
+			ArrayList<Hand> handsWithMinimumCards = new ArrayList<Hand>();
+			for (int i : highestScorers) {
+				if (hands.get(i).getCards().size() == minimumHandSize) {
+					handsWithMinimumCards.add(hands.get(i));
+				}
+			}
+			
+			if (handsWithMinimumCards.size() > 1) { // There is a tie
+				String winners = "";
+				for (int i = 0; i < handsWithMinimumCards.size(); i++) {
+					if (i != handsWithMinimumCards.size()-1) {
+						winners += handsWithMinimumCards.get(i).getPlayerName() + ", ";
+					} else {
+						winners += " and " + handsWithMinimumCards.get(i).getPlayerName();
+					}
+				}
+				
+				g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 200));
+				g.setColor(new Color(139, 69, 19));
+				g.drawString(winners + " TIE! ", getWidth() / 100, getHeight() / 8 + 100);
+				g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 75));
+				g.drawString("Score: " + highestScore, getWidth() / 100, getHeight() / 8 + 210);
+				g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 70));
+				int yOffset = 0;
+				for (Hand h : losers) {
+					g.drawString(h.getPlayerName() + ": " + h.getScore(), getWidth() / 100 + 450,
+							getHeight() / 8 + 210 + (80 * yOffset));
+					yOffset++;
+				}
+			} else {
+				g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 200));
+				g.setColor(new Color(139, 69, 19));
+				g.drawString(handsWithMinimumCards.get(0).getPlayerName() + " WINS! ", getWidth() / 100, getHeight() / 8 + 100);
+				g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 75));
+				g.drawString("Score: " + highestScore, getWidth() / 100, getHeight() / 8 + 210);
+				g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 70));
+				int yOffset = 0;
+				for (Hand h : losers) {
+					g.drawString(h.getPlayerName() + ": " + h.getScore(), getWidth() / 100 + 450,
+							getHeight() / 8 + 210 + (80 * yOffset));
+					yOffset++;
+				}
+			}
+		} else {
+			g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 200));
+			g.setColor(new Color(139, 69, 19));
+			g.drawString(hands.get(highestScorers.get(0)).getPlayerName() + " WINS! ", getWidth() / 100, getHeight() / 8 + 100);
+			g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 75));
+			g.drawString("Score: " + highestScore, getWidth() / 100, getHeight() / 8 + 210);
+			g.setFont(new Font("Serif", Font.BOLD | Font.ITALIC, 70));
+			int yOffset = 0;
+			for (Hand h : losers) {
+				g.drawString(h.getPlayerName() + ": " + h.getScore(), getWidth() / 100 + 450,
+						getHeight() / 8 + 210 + (80 * yOffset));
+				yOffset++;
+			}
+		}
+	}
 }
