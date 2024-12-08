@@ -24,7 +24,7 @@ public class GamePanel extends JPanel {
         this.endPanel = endPanel;
         this.frame = gameFrame;
         this.gameState = gameState;
-        this.background = Generator.loadImage("Splendor/assets/gameBackground.png");
+        this.background = Generator.loadImage("/Splendor/assets/gameBackground.png");
         game.setPanel(this);
         setPreferredSize(new Dimension(1920, 1080)); // Set a preferred size
         setVisible(true);

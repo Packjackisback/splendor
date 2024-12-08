@@ -12,7 +12,7 @@ public class EndPanel extends JPanel {
 	private ArrayList<Hand> hands;
 	
 	public EndPanel() {
-		this.background = Generator.loadImage("Splendor/assets/resultsScreen.PNG"); // Initialize with the Game instance
+		this.background = Generator.loadImage("/Splendor/assets/resultsScreen.PNG"); // Initialize with the Game instance
 		scores = new int[4];
 
 		setPreferredSize(new Dimension(1920, 1080)); // Set a preferred size
