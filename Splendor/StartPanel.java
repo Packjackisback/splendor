@@ -23,8 +23,8 @@ public class StartPanel extends JPanel implements MouseListener {
         this.nextPanel = nextPanel;
         setPreferredSize(new Dimension(1920, 1080));
         try {
-            background1 = Generator.loadImage("Splendor/assets/startBackground.PNG");
-            background2 = Generator.loadImage("Splendor/assets/blackImage.jpg");
+            background1 = Generator.loadImage("/Splendor/assets/startBackground.PNG");
+            background2 = Generator.loadImage("/Splendor/assets/blackImage.jpg");
         } catch (Exception E) {
             System.out.println("Exception Error");
         }

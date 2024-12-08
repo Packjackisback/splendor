@@ -29,13 +29,13 @@ public class Card extends Piece implements Drawable {
 	public static BufferedImage getBack(int backLevel) {
 		switch(backLevel) {
 			case 1:
-				BufferedImage green = Generator.loadImage("Splendor/assets/GreenCard.jpg");
+				BufferedImage green = Generator.loadImage("/Splendor/assets/GreenCard.jpg");
 				return green;
 			case 2:
-				BufferedImage yellow = Generator.loadImage("Splendor/assets/YellowCard.jpg");
+				BufferedImage yellow = Generator.loadImage("/Splendor/assets/YellowCard.jpg");
 				return yellow;
 			case 3:
-				BufferedImage blue = Generator.loadImage("Splendor/assets/BlueCard.jpg");
+				BufferedImage blue = Generator.loadImage("/Splendor/assets/BlueCard.jpg");
 				return blue;
 			default:
 				throw new RuntimeException("BackLevel not found\nBackLevel: " + backLevel);
