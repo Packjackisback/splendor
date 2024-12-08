@@ -469,7 +469,7 @@ public class Game {
 		for (Gem gem : tokenBank.keySet()) {
 			for (Token t : tokenBank.get(gem)) {
 				g.drawString("" + tokenBank.get(gem).size(), t.getX(), t.getY());
-				t.draw(g, tokenBank.get(gem).size());
+				t.draw(g, tokenBank.get(gem).size(), false);
 			}
 		}
 	}
