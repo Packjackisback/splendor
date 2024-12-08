@@ -43,12 +43,12 @@ public class GameState {
         //hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 11, new HashMap<Gem, Integer>(), 0));
         //hands.get(2).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 8, new HashMap<Gem, Integer>(), 0));
         //hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 4, new HashMap<Gem, Integer>(), 0));
-        for (int i = 0; i < 3; i++) {
-        	hands.get(0).addToken(new Token(new Gem("Red")));
-        	hands.get(0).addToken(new Token(new Gem("Blue")));
-        	hands.get(0).addToken(new Token(new Gem("Green")));
-        }
-        hands.get(0).addToken(new Token(new Gem("White")));
+        //for (int i = 0; i < 3; i++) {
+        //	hands.get(0).addToken(new Token(new Gem("Red")));
+        //	hands.get(0).addToken(new Token(new Gem("Blue")));
+        //	hands.get(0).addToken(new Token(new Gem("Green")));
+        //}
+        //hands.get(0).addToken(new Token(new Gem("White")));
     }
 
 	public void nextTurn() {
