@@ -26,11 +26,12 @@ public class Hand {
         nobles = new ArrayList<Noble>();
         reservedCards = new ArrayList<Card>();
         reservedTokens = new ArrayList<Token>();
-        playerName = "Player " + (num-1);
+        playerName = "Player " + (num+1);
         //credits = new HashMap<Gem, Integer>();
     }
 
     // Getters
+    public String getPlayerName() { return playerName; }
     public TreeMap<Gem, ArrayList<Token>> getTokens() { return tokens; }
     public TreeMap<Gem, ArrayList<Card>> getCards() { return cards; }
     public int getPlayerNum() { return playerNum; }
@@ -227,7 +228,7 @@ public class Hand {
 
 			if (playerNum == 0) { // At the bottom of the screen
 				x = (int) (frameWidth / 2 - width / 2);
-				y = (int) (frameHeight / 2 + game.getHeight() / 2 + cardSpacingY * 2);
+				y = (int) (game.getY() + game.getHeight() + cardSpacingY * 5);
 			} else { // At the top of the screen
 				x = (int) (frameWidth / 2 - width / 2);
 				y = (int) (frameHeight / 2 - game.getHeight() / 2 - height - cardSpacingY * 3);
@@ -497,6 +498,14 @@ public class Hand {
 						}
 					}
 					
+					if (cards.keySet().size() == 0 && tokens.keySet().size() > 0) {
+						if (tokens.keySet().size() >= 3) {
+							xReserved = (int)(x + 3 * (chipRadius + chipSpacing));
+						} else {
+							xReserved = (int)(x + tokens.keySet().size() * (chipRadius + chipSpacing));
+						}
+					}
+					
 					c.setWidth((int) cardWidth);
 					c.setHeight((int) cardHeight);
 					c.setX(xReserved);
@@ -518,23 +527,14 @@ public class Hand {
 					int xReserved = (int)(x - cardSpacingX - cardWidth);
 					int yReserved = (int)(y + (cardHeight + cardSpacingY) * reservedCardsOffset);
 					
-					if (cards.keySet().size() > 1 && tokens.keySet().size() > 1) {
-						int reservedCount = 1;
-						int tokenCount = 1;
-						for (Gem g : cards.keySet()) {
-							if (tokenCount == 2) {
-								for (Gem g2 : tokens.keySet()) {
-									if (tokenCount == 2 && g.equals(g2)) {
-										xReserved -= (int) (chipRadius + chipRadius / 7);
-									}
-									tokenCount++;
-								}
+					if (cards.keySet().iterator().hasNext()) {
+						Gem cardGem = cards.keySet().iterator().next();
+						Iterator<Gem> tokenIter = tokens.keySet().iterator();
+						while (tokenIter.hasNext()) {
+							Gem tokenGem = tokenIter.next();
+							if (tokenGem.getGemType().equals(cardGem.getGemType())) {
+								xReserved -= (int) (chipRadius + chipRadius / 7);
 							}
-							reservedCount++;
-						}
-					} else if (cards.keySet().size() == 1 && tokens.keySet().size() == 1) {
-						if (cards.keySet().iterator().next().equals(tokens.keySet().iterator().next())) {
-							xReserved -= (int) (chipRadius + chipRadius / 7);
 						}
 					}
 					
@@ -584,5 +584,15 @@ public class Hand {
 		} else {
 			reservedTokens.remove(index);
 		}
+	}
+	
+	public int getNumberOfCards() {
+		int count = 0;
+		for (Gem g : cards.keySet()) {
+			for (Card c : cards.get(g)) {
+				count++;
+			}
+		}
+		return count;
 	}
 }
