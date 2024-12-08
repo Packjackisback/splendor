@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: Splendor.SplendorRunner
+Created-By: 23 (Arch Linux)
+
