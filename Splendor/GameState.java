@@ -281,7 +281,7 @@ public class GameState {
     	g.setColor(Color.YELLOW);
     	    	
     	g.setFont(new Font("default", currentPlayer == 0 ? Font.BOLD : 0, currentPlayer == 0 ? 20 : 16));
-        g.drawString("Player 1", hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 13 + 15);
+        g.drawString("Player 1", hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 10);
         
     	g.setFont(new Font("default", currentPlayer == 1 ? Font.BOLD : 0, currentPlayer == 1 ? 20 : 16));
         g.drawString("Player 2", 20, gameFrame.getHeight() / 2);
