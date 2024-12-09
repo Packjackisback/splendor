@@ -219,10 +219,11 @@ public class Hand {
 		for (Gem g : cards.keySet()) {
 			if (cards.get(g).size() > 0) {
 				if (isHorizontal) {
-					amtOfCardStacks += Math.ceil((double)cards.get(g).size() / 3.0);
+					amtOfCardStacks += Math.ceil((double)cards.get(g).size() / 4.0);
 				} else {
 					amtOfCardStacks++;	
 				}
+				System.out.println(amtOfCardStacks);
 			}
 		}
 
@@ -232,34 +233,36 @@ public class Hand {
 
 			if (playerNum == 0) { // At the bottom of the screen
 				x = (int) (frameWidth / 2 - width / 2);
-				y = (int) (game.getY() + game.getHeight() + cardSpacingY * 5);
+				y = (int) (game.getY() + game.getHeight() + cardSpacingY * 2);
 			} else { // At the top of the screen
 				x = (int) (frameWidth / 2 - width / 2);
 				y = (int) (frameHeight / 2 - game.getHeight() / 2 - height - cardSpacingY * 3);
 			}
-			
+			//System.out.println(x);
 			// Calculating the cards coordinates
 			int count = 0;
 			for (Gem g : cards.keySet()) {
 				ArrayList<Card> c = cards.get(g);
 				int yOffsetCount = 0;
-				int xOffsetCount = 0;
+				int cardsInStack = 0;
 				for (Card card : c) {
+					cardsInStack++;
+
+			        if (cardsInStack >= 5) {
+			            cardsInStack = 0;
+			            count++;
+			            yOffsetCount = 0;
+			        }
+			        
 					card.setWidth((int) cardWidth);
 					card.setHeight((int) cardHeight);
 					card.setX((int) (x + (cardSpacingX + cardWidth) * count));
 					card.setY((int) (y + (cardSpacingY + cardHeight / 13) * yOffsetCount));
-					yOffsetCount++;
-					xOffsetCount++;
 					
-					if (xOffsetCount % 4 == 0 && xOffsetCount >= 4) {
-						count++;
-						yOffsetCount = 0;
-					}
+					yOffsetCount++;
 				}
 				count++;
 			}
-
 			int yOutlierOffset = 0;
 			int xOutlierCountTokens = 0;
 

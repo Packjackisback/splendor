@@ -39,12 +39,25 @@ public class GameState {
         for (int i = 0; i < 4; i++) hands.add(new Hand(i, game));
         score = new int[4];
         
-        //hands.get(0).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 15, new HashMap<Gem, Integer>(), 0));
-        //hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 14, new HashMap<Gem, Integer>(), 0));
-        //hands.get(1).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 1, new HashMap<Gem, Integer>(), 0));
-        //hands.get(2).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 15, new HashMap<Gem, Integer>(), 0));
-        //hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 7, new HashMap<Gem, Integer>(), 0));
-        //hands.get(3).addCard(new Card("Splendor/assets/Cards/01.jpg", new Gem("White"), 6, new HashMap<Gem, Integer>(), 0));
+		//hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 15, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 14, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 1, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 15, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 7, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/01.jpg", new Gem("White"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/019.jpg", new Gem("Red"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/019.jpg", new Gem("Red"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/019.jpg", new Gem("Red"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/019.jpg", new Gem("Red"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/012.jpg", new Gem("Blue"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/012.jpg", new Gem("Blue"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/012.jpg", new Gem("Blue"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/012.jpg", new Gem("Blue"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/013.jpg", new Gem("Green"), 6, new HashMap<Gem, Integer>(), 0));
+        //hands.get(0).addCard(new Card("/Splendor/assets/Cards/013.jpg", new Gem("Green"), 6, new HashMap<Gem, Integer>(), 0));
+        
+        
         //for (int i = 0; i < 3; i++) {
         //	hands.get(0).addToken(new Token(new Gem("Red")));
         //	hands.get(0).addToken(new Token(new Gem("Blue")));
@@ -268,7 +281,7 @@ public class GameState {
     	g.setColor(Color.YELLOW);
     	    	
     	g.setFont(new Font("default", currentPlayer == 0 ? Font.BOLD : 0, currentPlayer == 0 ? 20 : 16));
-        g.drawString("Player 1", hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 13 - 15);
+        g.drawString("Player 1", hands.get(0).getX(), hands.get(0).getY() - hands.get(0).getHeight() / 13);
         
     	g.setFont(new Font("default", currentPlayer == 1 ? Font.BOLD : 0, currentPlayer == 1 ? 20 : 16));
         g.drawString("Player 2", 20, gameFrame.getHeight() / 2);
