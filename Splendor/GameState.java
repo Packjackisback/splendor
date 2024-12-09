@@ -101,7 +101,15 @@ public class GameState {
 			endGameCheck();
 		}
 		
+		for (Card c : hands.get(currentPlayer).getReservedCards()) {
+			c.flip();
+		}
+		
 		this.currentPlayer = (this.currentPlayer + 1) % 4;
+		
+		for (Card c : hands.get(currentPlayer).getReservedCards()) {
+			c.flip();
+		}
 		
 		if (this.lastTurns && currentPlayer == playerLastTurnIndex) {
 			invokeEnd();
