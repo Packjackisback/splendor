@@ -1,4 +1,5 @@
-# splendor
-https://github.com/hexanome-04/splendor/tree/master/client/public/images
+# Splendor
 
-The white rectangle has a width that is .5 the screen width and has a lengtht that is approximately .53 the screen length.
+Splendor was the Fall semester project for the CS3 course at SLHS.
+
+Our game had a pirate theme, and implemented (hopefully) all of the components of Splendor.
